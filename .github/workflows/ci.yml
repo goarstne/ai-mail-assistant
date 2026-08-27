@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Die Erweiterung selbst hat keine Abhängigkeiten; Validator und Tests
+      # laufen mit den Bordmitteln von Node.
+      - name: Konsistenzprüfung (Manifest, Dateiverweise, Element-IDs, i18n)
+        run: node scripts/validate.mjs
+
+      - name: Unit-Tests
+        run: node --test test/*.test.js
+
+      - name: Paket bauen
+        run: bash scripts/build.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xpi
+          path: dist/*.xpi

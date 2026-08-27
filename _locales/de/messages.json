@@ -1,0 +1,325 @@
+{
+  "extName": {
+    "message": "Kimi AI Mail Assistant"
+  },
+  "extDescription": {
+    "message": "KI-gestützte E-Mail-Antworten mit Kimi AI (Moonshot AI). Der Mailinhalt wird dafür an die Moonshot-API übertragen."
+  },
+  "actionTitle": {
+    "message": "Mit Kimi AI antworten"
+  },
+  "popupTitle": {
+    "message": "Mit Kimi AI antworten"
+  },
+  "labelSubject": {
+    "message": "Betreff:"
+  },
+  "labelAuthor": {
+    "message": "Absender:"
+  },
+  "labelInstruction": {
+    "message": "Anweisung für die Antwort"
+  },
+  "placeholderInstruction": {
+    "message": "z. B. Bedanke dich höflich für das Angebot und sage zu."
+  },
+  "generateButton": {
+    "message": "Antwort generieren und einfügen"
+  },
+  "loadingText": {
+    "message": "Kimi AI generiert die Antwort …"
+  },
+  "noMessageSelected": {
+    "message": "Keine E-Mail ausgewählt"
+  },
+  "noSubject": {
+    "message": "(Kein Betreff)"
+  },
+  "unknownAuthor": {
+    "message": "(Unbekannt)"
+  },
+  "noticeNoBody": {
+    "message": "In dieser Nachricht wurde kein lesbarer Textteil gefunden (z. B. reine Bildmail oder verschlüsselte Nachricht)."
+  },
+  "openOptions": {
+    "message": "Einstellungen öffnen"
+  },
+  "consentRequired": {
+    "message": "Bevor Antworten erzeugt werden können, muss in den Einstellungen der Datenschutzhinweis bestätigt und ein API-Key hinterlegt werden."
+  },
+  "optionsTitle": {
+    "message": "Kimi AI Einstellungen"
+  },
+  "privacyHeading": {
+    "message": "Datenschutzhinweis"
+  },
+  "privacyBody": {
+    "message": "Beim Erzeugen einer Antwort werden Absender, Betreff und Inhalt der ausgewählten E-Mail an die Moonshot-AI-API übertragen und dort verarbeitet. Das betrifft auch personenbezogene Daten Dritter, die dir geschrieben haben. Verwende die Erweiterung nur, wenn du dazu berechtigt bist. Details siehe PRIVACY.md."
+  },
+  "consentLabel": {
+    "message": "Ich habe den Datenschutzhinweis gelesen und stimme der Übertragung von Mailinhalten an die Moonshot-AI-API zu."
+  },
+  "labelApiKey": {
+    "message": "Kimi API Key"
+  },
+  "hintApiKey": {
+    "message": "Der Schlüssel wird unverschlüsselt im Thunderbird-Profil gespeichert (storage.local) und ist in Profil-Backups enthalten. Über „Key löschen“ lässt er sich jederzeit entfernen."
+  },
+  "labelBaseUrl": {
+    "message": "API Base URL"
+  },
+  "hintBaseUrl": {
+    "message": "Nur folgende Hosts sind zugelassen: $HOSTS$. api.moonshot.ai gehört zu platform.kimi.ai, api.moonshot.cn zur separaten China-Plattform — die Keys sind nicht austauschbar. Andere Adressen würden API-Key und Mailinhalt an einen fremden Server senden.",
+    "placeholders": {
+      "hosts": {
+        "content": "$1"
+      }
+    }
+  },
+  "labelModel": {
+    "message": "Modell"
+  },
+  "saveButton": {
+    "message": "Einstellungen speichern"
+  },
+  "clearButton": {
+    "message": "Key löschen"
+  },
+  "statusSaved": {
+    "message": "Einstellungen gespeichert."
+  },
+  "statusCleared": {
+    "message": "API-Key gelöscht und Zustimmung zurückgezogen."
+  },
+  "errUrlEmpty": {
+    "message": "Bitte eine API Base URL angeben."
+  },
+  "errUrlMalformed": {
+    "message": "Die API Base URL ist keine gültige Adresse."
+  },
+  "errUrlNotHttps": {
+    "message": "Die API Base URL muss mit https:// beginnen."
+  },
+  "errUrlHostNotAllowed": {
+    "message": "Dieser Host ist nicht zugelassen. Erlaubt sind ausschließlich api.moonshot.cn und api.moonshot.ai."
+  },
+  "errUrlHasCredentials": {
+    "message": "Die API Base URL darf keine Zugangsdaten enthalten."
+  },
+  "errUnsupportedModel": {
+    "message": "Ungültige Modell-Kennung."
+  },
+  "errConsentMissing": {
+    "message": "Bitte zuerst den Datenschutzhinweis bestätigen."
+  },
+  "errSaveFailed": {
+    "message": "Speichern fehlgeschlagen: $DETAIL$",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errNoConsent": {
+    "message": "Der Datenschutzhinweis wurde noch nicht bestätigt. Bitte in den Einstellungen zustimmen."
+  },
+  "errNoApiKey": {
+    "message": "Bitte zuerst den Kimi API Key in den Einstellungen eintragen."
+  },
+  "errNoPrompt": {
+    "message": "Bitte eine Anweisung eingeben."
+  },
+  "errNoTab": {
+    "message": "Es konnte kein aktiver Tab ermittelt werden."
+  },
+  "errReadMail": {
+    "message": "Fehler beim Lesen der E-Mail: $DETAIL$",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errTimeout": {
+    "message": "Zeitüberschreitung: Die API hat innerhalb von 60 Sekunden nicht geantwortet."
+  },
+  "errNetwork": {
+    "message": "Netzwerkfehler: Die API war nicht erreichbar. ($DETAIL$)",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errUnauthorized": {
+    "message": "Der API-Key wurde abgelehnt. Bitte in den Einstellungen prüfen. ($DETAIL$)",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRateLimited": {
+    "message": "Zu viele Anfragen. Bitte kurz warten und erneut versuchen. ($DETAIL$)",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errApi": {
+    "message": "API-Fehler ($STATUS$): $DETAIL$",
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errEmptyReply": {
+    "message": "Die API hat eine leere Antwort zurückgegeben."
+  },
+  "errUnknown": {
+    "message": "Unbekannter Fehler."
+  },
+  "errHostPermissionMissing": {
+    "message": "Der Zugriff auf $ORIGIN$ ist nicht freigegeben. Bitte die Einstellungen öffnen und erneut speichern, dann fragt Thunderbird nach der Freigabe.",
+    "placeholders": {
+      "origin": {
+        "content": "$1"
+      }
+    }
+  },
+  "errPermissionDenied": {
+    "message": "Die Einstellungen wurden gespeichert, aber der Zugriff auf $ORIGIN$ wurde abgelehnt. Ohne diese Freigabe kann keine Antwort erzeugt werden.",
+    "placeholders": {
+      "origin": {
+        "content": "$1"
+      }
+    }
+  },
+  "refreshModelsButton": {
+    "message": "Verfügbare Modelle laden"
+  },
+  "hintModel": {
+    "message": "Die Liste stammt aus der Rückfallliste der Erweiterung. „Verfügbare Modelle laden“ fragt /v1/models ab und zeigt genau die Modelle, die dein Account freigeschaltet hat. Das angegebene Kontextfenster bestimmt, wie viel Mailtext übertragen wird."
+  },
+  "statusModelsLoaded": {
+    "message": "$COUNT$ Modelle geladen.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "errModelsFailed": {
+    "message": "Modelle konnten nicht geladen werden: $DETAIL$",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errModelsEmpty": {
+    "message": "Die API hat keine Modelle zurückgegeben."
+  },
+  "errApiUnavailable": {
+    "message": "Diese Thunderbird-Version stellt die benötigte messageDisplay-API nicht bereit. Thunderbird 128 oder neuer wird vorausgesetzt."
+  },
+  "composeActionTitle": {
+    "message": "Text mit Kimi AI schreiben"
+  },
+  "composeTitle": {
+    "message": "Text mit Kimi AI schreiben"
+  },
+  "composeButton": {
+    "message": "Text generieren und einfügen"
+  },
+  "labelRecipients": {
+    "message": "An:"
+  },
+  "noRecipients": {
+    "message": "(Keine Empfänger)"
+  },
+  "labelComposeInstruction": {
+    "message": "Anweisung für den Text"
+  },
+  "placeholderComposeInstruction": {
+    "message": "z. B. Frage nach einem Termin nächste Woche, Ton sachlich und kurz."
+  },
+  "noticeContextOriginal": {
+    "message": "Die ursprüngliche Nachricht wird als Kontext mitgesendet."
+  },
+  "noticeContextDraft": {
+    "message": "Der bisherige Entwurfstext wird als Kontext mitgesendet."
+  },
+  "noticeContextEmpty": {
+    "message": "Der Entwurf ist leer — es wird eine neue E-Mail geschrieben."
+  },
+  "errReadDraft": {
+    "message": "Fehler beim Lesen des Entwurfs: $DETAIL$",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errNoComposeTab": {
+    "message": "Es konnte kein Verfassen-Fenster ermittelt werden."
+  },
+  "suggestionsHeading": {
+    "message": "Antwortvorschläge"
+  },
+  "suggestReload": {
+    "message": "Neu laden"
+  },
+  "suggestLoading": {
+    "message": "Vorschläge werden erstellt …"
+  },
+  "suggestManualHint": {
+    "message": "Automatisches Laden ist abgeschaltet. Über „Neu laden“ Vorschläge anfordern."
+  },
+  "errSuggestNone": {
+    "message": "Es konnten keine Vorschläge erstellt werden."
+  },
+  "errSuggestUnparsable": {
+    "message": "Die Antwort des Modells enthielt keine verwertbaren Vorschläge. „Neu laden“ versucht es erneut."
+  },
+  "labelAutoSuggest": {
+    "message": "Antwortvorschläge automatisch laden"
+  },
+  "hintAutoSuggest": {
+    "message": "Erstellt beim Öffnen des Popups Vorschläge, worüber geantwortet werden kann. Jedes Öffnen kostet dabei einen Modellaufruf — abgeschaltet lassen sie sich jederzeit über „Neu laden“ anfordern."
+  },
+  "suggestionsIntro": {
+    "message": "Ein Klick auf ein Thema erzeugt die Antwort sofort."
+  },
+  "modelOption": {
+    "message": "$MODEL$ · $CONTEXT$ Kontext",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      },
+      "context": {
+        "content": "$2"
+      }
+    }
+  },
+  "firstRunHeading": {
+    "message": "Einrichtung — drei Schritte"
+  },
+  "firstRunStep1": {
+    "message": "Datenschutzhinweis lesen und den Haken darunter setzen."
+  },
+  "firstRunStep2": {
+    "message": "API-Key von platform.kimi.ai eintragen (beginnt mit „sk-“)."
+  },
+  "firstRunStep3": {
+    "message": "Speichern — Thunderbird fragt dann einmalig nach der Freigabe für den API-Zugriff."
+  },
+  "statusSetupComplete": {
+    "message": "Fertig eingerichtet. Öffne eine E-Mail und klicke in der Nachrichtenanzeige auf „Mit Kimi AI antworten“."
+  }
+}

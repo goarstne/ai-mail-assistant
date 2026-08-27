@@ -1,0 +1,19 @@
+{
+  "name": "kimi-ai-mail-assistant",
+  "version": "1.7.0",
+  "description": "Thunderbird MailExtension fuer KI-gestuetzte E-Mail-Antworten via Kimi AI (Moonshot AI).",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "validate": "node scripts/validate.mjs",
+    "lint": "eslint .",
+    "build": "bash scripts/build.sh",
+    "check": "npm run validate && npm test",
+    "preview": "node scripts/preview.mjs",
+    "shots": "node scripts/preview.mjs && node scripts/shots.mjs"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
+}

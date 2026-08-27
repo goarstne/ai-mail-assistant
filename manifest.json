@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "version": "1.7.0",
+  "description": "__MSG_extDescription__",
+  "default_locale": "de",
+  "author": "Carsten",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "kimi-mail-assistant@local.extension",
+      "strict_min_version": "128.0"
+    }
+  },
+  "icons": {
+    "32": "icons/icon.svg",
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "permissions": [
+    "messagesRead",
+    "compose",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://api.moonshot.cn/*",
+    "https://api.moonshot.ai/*"
+  ],
+  "background": {
+    "scripts": [
+      "lib/config.js",
+      "lib/mailtext.js",
+      "background.js"
+    ]
+  },
+  "message_display_action": {
+    "default_title": "__MSG_actionTitle__",
+    "default_icon": "icons/icon.svg",
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "compose_action": {
+    "default_title": "__MSG_composeActionTitle__",
+    "default_icon": "icons/icon.svg",
+    "default_popup": "popup/compose.html"
+  }
+}

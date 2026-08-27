@@ -1,0 +1,111 @@
+/**
+ * Nur das, was die beiden Popups von der Optionsseite unterscheidet.
+ * Farben, Abstaende und Bedienelemente stehen in ../styles/base.css.
+ */
+
+body {
+  width: 380px;
+  padding: var(--gap-4);
+  background: var(--surface-raised);
+}
+
+/* --- Kopfzeile ------------------------------------------------------------- */
+.header h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-2);
+  margin: 0 0 var(--gap-3) 0;
+  font-size: 15px;
+  font-weight: 700;
+  padding-bottom: var(--gap-2);
+  border-bottom: 1px solid var(--border);
+}
+
+/* --- Vorschau der Nachricht bzw. des Entwurfs ------------------------------ */
+.email-preview {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px var(--gap-3);
+  font-size: 12px;
+  margin-bottom: var(--gap-4);
+  overflow-wrap: anywhere;
+}
+
+/* Beschriftung und Wert in einem Raster, damit die Werte untereinander
+   fluchten - vorher rutschten sie je nach Laenge der Beschriftung. */
+.preview-row {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: var(--gap-2);
+  margin-bottom: var(--gap-1);
+}
+.preview-row:last-of-type { margin-bottom: 0; }
+.preview-row dt { color: var(--muted); font-weight: 600; }
+.preview-row dd { margin: 0; }
+
+.email-preview .hint { margin-top: var(--gap-2); margin-bottom: 0; }
+
+/* Etwas Luft, bevor das Eingabefeld folgt. */
+#suggestionIntro { margin-top: var(--gap-2); }
+
+/* --- Antwortvorschlaege ---------------------------------------------------- */
+.suggestions { margin-bottom: var(--gap-4); }
+
+.suggestions-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--gap-2);
+  margin-bottom: var(--gap-2);
+}
+.suggestions-title { font-size: 13px; font-weight: 600; }
+
+.suggestion-list { display: flex; flex-direction: column; gap: 6px; }
+
+.suggestion {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "title arrow" "desc arrow";
+  align-items: center;
+  gap: 2px var(--gap-2);
+  width: 100%;
+  padding: 9px 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-align: left;
+  font-weight: 400;
+  color: var(--text);
+}
+/* Hover bleibt zurueckhaltend - nur der Rahmen reagiert. Vorher war er von
+   der Auswahl kaum zu unterscheiden, sodass die Karte unter dem Mauszeiger
+   ausgewaehlt aussah. */
+.suggestion:hover:not(:disabled) { border-color: var(--border-strong); }
+
+/* Die Auswahl traegt zusaetzlich einen Balken an der linken Kante - der
+   unterscheidet sich auch dann, wenn Rahmenfarben schwer zu vergleichen sind. */
+.suggestion.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 0 var(--accent);
+  padding-left: 14px;
+}
+
+.suggestion-title { grid-area: title; font-weight: 700; font-size: 13px; }
+.suggestion-desc { grid-area: desc; color: var(--muted); font-size: 12px; line-height: 1.4; }
+
+/* Pfeil als Hinweis, dass der Klick unmittelbar etwas ausloest. */
+.suggestion::after {
+  content: "→";
+  grid-area: arrow;
+  color: var(--muted);
+  font-size: 15px;
+}
+.suggestion:hover:not(:disabled)::after { color: var(--text); }
+.suggestion.selected::after { color: var(--accent); }
+
+/* --- Eingabe und Aktion ---------------------------------------------------- */
+.form-group { margin-bottom: var(--gap-3); }
+.form-group label { font-size: 13px; margin-bottom: var(--gap-2); }
+.actions button { width: 100%; padding: 10px; font-size: 13.5px; }

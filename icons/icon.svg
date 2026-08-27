@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Kimi AI Mail Assistant">
+  <rect x="4" y="12" width="56" height="40" rx="7" fill="#0a84ff"/>
+  <path d="M8 19 L32 36 L56 19" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="49" cy="45" r="12" fill="#ffffff"/>
+  <path d="M44 39 v12 M44 45 l6 -6 M44 45 l6 6" fill="none" stroke="#0a84ff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="55" cy="41" r="1.8" fill="#0a84ff"/>
+</svg>

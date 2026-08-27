@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>__MSG_composeTitle__</title>
+  <link rel="stylesheet" href="../styles/base.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <h3>
+      <img class="brand-icon" src="../icons/icon.svg" alt="" width="18" height="18">
+      <span data-i18n="composeTitle"></span>
+    </h3>
+  </div>
+
+  <div id="consentGate" class="notice hidden">
+    <p data-i18n="consentRequired"></p>
+    <button id="openOptionsBtn" class="secondary" data-i18n="openOptions"></button>
+  </div>
+
+  <div id="mainUi">
+    <dl id="draftInfo" class="email-preview">
+      <div class="preview-row">
+        <dt data-i18n="labelRecipients"></dt>
+        <dd id="recipients">…</dd>
+      </div>
+      <div class="preview-row">
+        <dt data-i18n="labelSubject"></dt>
+        <dd id="subject">…</dd>
+      </div>
+      <p id="contextNote" class="hint"></p>
+    </dl>
+
+
+    <!-- Antwortvorschlaege: das Modell beschreibt, WORUEBER geantwortet werden
+         kann; die Formulierung folgt erst nach der Auswahl. -->
+    <div id="suggestionPanel" class="suggestions hidden">
+      <div class="suggestions-head">
+        <span class="suggestions-title" data-i18n="suggestionsHeading"></span>
+        <button id="suggestBtn" type="button" class="linkish" data-i18n="suggestReload"></button>
+      </div>
+      <div id="suggestionLoading" class="loading-state hidden" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <span data-i18n="suggestLoading"></span>
+      </div>
+      <div id="suggestionList" class="suggestion-list hidden"></div>
+      <p id="suggestionIntro" class="hint" data-i18n="suggestionsIntro"></p>
+      <p id="suggestionHint" class="hint hidden"></p>
+    </div>
+
+    <div class="form-group">
+      <label for="userPrompt" data-i18n="labelComposeInstruction"></label>
+      <textarea id="userPrompt" rows="4"
+                data-i18n-placeholder="placeholderComposeInstruction"
+                maxlength="2000"></textarea>
+    </div>
+
+    <div class="actions">
+      <button id="generateBtn" data-i18n="composeButton"></button>
+    </div>
+  </div>
+
+  <div id="loading" class="loading-state hidden" role="status" aria-live="polite">
+    <div class="spinner" aria-hidden="true"></div>
+    <span data-i18n="loadingText"></span>
+  </div>
+
+  <div id="error" class="error-box hidden" role="alert" aria-live="assertive"></div>
+
+  <script src="../lib/config.js"></script>
+  <script src="../lib/mailtext.js"></script>
+  <script src="../lib/i18n.js"></script>
+  <script src="../lib/ui.js"></script>
+  <script src="compose.js"></script>
+</body>
+</html>

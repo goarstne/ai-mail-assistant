@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>__MSG_optionsTitle__</title>
+  <link rel="stylesheet" href="../styles/base.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <h2>
+      <img class="brand-icon" src="../icons/icon.svg" alt="" width="22" height="22">
+      <span data-i18n="optionsTitle"></span>
+    </h2>
+
+    <!-- Nur beim ersten Mal: sagt in drei Schritten, was zu tun ist. -->
+    <section id="firstRun" class="firstrun hidden" aria-labelledby="firstRunHeading">
+      <h3 id="firstRunHeading" data-i18n="firstRunHeading"></h3>
+      <ol>
+        <li data-i18n="firstRunStep1"></li>
+        <li data-i18n="firstRunStep2"></li>
+        <li data-i18n="firstRunStep3"></li>
+      </ol>
+    </section>
+
+    <!-- H3: Datenschutzhinweis mit ausdruecklicher Zustimmung. -->
+    <section class="privacy notice" aria-labelledby="privacyHeading">
+      <h3 id="privacyHeading" data-i18n="privacyHeading"></h3>
+      <p data-i18n="privacyBody"></p>
+      <label class="checkbox">
+        <input type="checkbox" id="consentGiven">
+        <span data-i18n="consentLabel"></span>
+      </label>
+    </section>
+
+    <div class="field">
+      <label for="apiKey" data-i18n="labelApiKey"></label>
+      <input type="password" id="apiKey" placeholder="sk-…" autocomplete="off" spellcheck="false">
+      <p class="hint" data-i18n="hintApiKey"></p>
+    </div>
+
+    <div class="field">
+      <label for="baseUrl" data-i18n="labelBaseUrl"></label>
+      <input type="text" id="baseUrl" value="https://api.moonshot.ai/v1" spellcheck="false">
+      <p class="hint" id="baseUrlHint"></p>
+    </div>
+
+    <div class="field">
+      <label for="model" data-i18n="labelModel"></label>
+      <!-- Die Auswahl wird aus dem Modell-Cache bzw. der Rueckfallliste
+           gefuellt und laesst sich ueber /v1/models aktualisieren. -->
+      <select id="model"></select>
+      <div class="inline-action">
+        <button id="refreshModels" type="button" class="secondary" data-i18n="refreshModelsButton"></button>
+      </div>
+      <p class="hint" data-i18n="hintModel"></p>
+    </div>
+
+    <div class="field">
+      <label class="checkbox">
+        <input type="checkbox" id="autoSuggest">
+        <span data-i18n="labelAutoSuggest"></span>
+      </label>
+      <p class="hint" data-i18n="hintAutoSuggest"></p>
+    </div>
+
+    <div class="buttons">
+      <button id="save" data-i18n="saveButton"></button>
+      <button id="clear" class="danger" data-i18n="clearButton"></button>
+    </div>
+
+    <!-- N4: eine einheitliche Statusanzeige statt alert() fuer Fehler
+         und Div fuer Erfolg. -->
+    <div id="status" class="status hidden" role="status" aria-live="polite"></div>
+  </main>
+
+  <script src="../lib/config.js"></script>
+  <script src="../lib/i18n.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

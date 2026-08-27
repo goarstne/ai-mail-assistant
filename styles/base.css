@@ -1,0 +1,289 @@
+/**
+ * Gemeinsames Fundament fuer Popup, Verfassen-Popup und Optionsseite.
+ *
+ * Vorher trugen popup.css und options.css je einen eigenen :root-Block mit
+ * teils abweichenden Werten, dazu verstreute Hex-Codes. Farben, Abstaende und
+ * die Bedienelemente liegen deshalb jetzt an genau einer Stelle; die beiden
+ * anderen Dateien enthalten nur noch, was ihre Ansicht wirklich unterscheidet.
+ */
+
+:root {
+  /* Akzent - entspricht dem Blau der Thunderbird-Oberflaeche */
+  --accent: #0a84ff;
+  --accent-hover: #0060df;
+  --accent-soft: #eaf4ff;
+  --accent-ring: rgba(10, 132, 255, 0.45);
+
+  /* Flaechen und Text */
+  --page: #fafafa;
+  --surface: #f4f5f7;
+  --surface-raised: #ffffff;
+  --border: #d4d7dc;
+  --border-strong: #b9bec7;
+  --text: #1f2328;
+  --muted: #656d76;
+
+  /* Zustandsfarben */
+  --ok-bg: #e6f6e9;
+  --ok-border: #a8e0b0;
+  --ok-text: #16703a;
+  --err-bg: #fdeaea;
+  --err-border: #f3b7b7;
+  --err-text: #9b1c1c;
+  --warn-bg: #fff8e1;
+  --warn-border: #f0dca4;
+  --warn-text: #6b530f;
+
+  /* Abstandsraster - alles Vielfache von 4px */
+  --gap-1: 4px;
+  --gap-2: 8px;
+  --gap-3: 12px;
+  --gap-4: 16px;
+  --gap-5: 24px;
+
+  --radius: 7px;
+  --radius-sm: 5px;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+/*
+ * Dunkle Variante.
+ *
+ * Zweimal notiert, mit identischen Werten aus derselben Quelle: einmal fuer
+ * die Systemeinstellung, einmal fuer eine ausdrueckliche Wahl ueber
+ * `data-theme`. Letzteres braucht die Oberflaechenvorschau, um beide Varianten
+ * aufnehmen zu koennen, ohne das System umzustellen - und es erlaubt spaeter,
+ * dem Thunderbird-Theme statt dem Betriebssystem zu folgen.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --accent: #4aa3ff;
+    --accent-hover: #6cb6ff;
+    --accent-soft: #1e2b3a;
+    --accent-ring: rgba(74, 163, 255, 0.5);
+
+    --page: #1c1b22;
+    --surface: #2a2a31;
+    --surface-raised: #32323b;
+    --border: #4a4a55;
+    --border-strong: #5f5f6b;
+    --text: #eceff3;
+    --muted: #a4abb5;
+
+    --ok-bg: #1c3626;
+    --ok-border: #36613f;
+    --ok-text: #adddb8;
+    --err-bg: #3a1f20;
+    --err-border: #74393b;
+    --err-text: #f2b3b3;
+    --warn-bg: #362f1c;
+    --warn-border: #665a2c;
+    --warn-text: #ecdca7;
+  }
+}
+
+:root[data-theme="dark"] {
+    --accent: #4aa3ff;
+    --accent-hover: #6cb6ff;
+    --accent-soft: #1e2b3a;
+    --accent-ring: rgba(74, 163, 255, 0.5);
+
+    --page: #1c1b22;
+    --surface: #2a2a31;
+    --surface-raised: #32323b;
+    --border: #4a4a55;
+    --border-strong: #5f5f6b;
+    --text: #eceff3;
+    --muted: #a4abb5;
+
+    --ok-bg: #1c3626;
+    --ok-border: #36613f;
+    --ok-text: #adddb8;
+    --err-bg: #3a1f20;
+    --err-border: #74393b;
+    --err-text: #f2b3b3;
+    --warn-bg: #362f1c;
+    --warn-border: #665a2c;
+    --warn-text: #ecdca7;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--page);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* --- Sichtbarer Fokus ------------------------------------------------------
+   Fehlte bisher vollstaendig: wer mit der Tastatur bedient, sah nicht, wo er
+   steht. `:focus-visible` zeigt den Ring nur bei Tastaturbedienung. */
+:where(button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* --- Eingabefelder --------------------------------------------------------- */
+label { display: block; font-weight: 600; margin-bottom: var(--gap-1); }
+
+input[type="text"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  transition: border-color 0.12s ease;
+}
+
+input[type="text"]:hover,
+input[type="password"]:hover,
+select:hover,
+textarea:hover { border-color: var(--border-strong); }
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus { border-color: var(--accent); }
+
+textarea { resize: vertical; min-height: 78px; }
+
+/* Gesperrte Felder muessen auch gesperrt aussehen - sonst tippt man in ein
+   Feld, das nichts annimmt (z. B. bei einer Mail ohne lesbaren Textteil). */
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background: var(--surface);
+  color: var(--muted);
+  border-color: var(--border);
+  cursor: not-allowed;
+}
+input:disabled:hover,
+select:disabled:hover,
+textarea:disabled:hover { border-color: var(--border); }
+
+/* --- Schaltflaechen -------------------------------------------------------- */
+button {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+button:hover:not(:disabled) { background: var(--accent-hover); }
+button:active:not(:disabled) { transform: translateY(1px); }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+button.secondary:hover:not(:disabled) { background: var(--accent-soft); }
+
+button.danger {
+  background: transparent;
+  color: var(--err-text);
+  border-color: var(--err-border);
+}
+button.danger:hover:not(:disabled) { background: var(--err-bg); }
+
+/* Textknopf ohne Rahmen - fuer Nebenaktionen wie "Neu laden" */
+button.linkish {
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+button.linkish:hover:not(:disabled) { background: none; color: var(--accent-hover); }
+button.linkish:active:not(:disabled) { transform: none; }
+
+/* --- Kleinteile ------------------------------------------------------------ */
+.hint {
+  margin: var(--gap-1) 0 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.hidden { display: none !important; }
+
+/* Symbol in der Kopfzeile - gibt beiden Popups und der Optionsseite dieselbe
+   Absenderkennung, ohne Platz zu kosten. */
+.brand-icon { flex: 0 0 auto; border-radius: 3px; }
+
+.notice {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--warn-text);
+  border-radius: var(--radius);
+  padding: var(--gap-3);
+  font-size: 12.5px;
+}
+.notice p { margin: 0 0 var(--gap-3) 0; }
+.notice p:last-child { margin-bottom: 0; }
+
+.status {
+  margin-top: var(--gap-4);
+  padding: 10px var(--gap-3);
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-size: 13px;
+}
+.status.ok { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-text); }
+.status.error { background: var(--err-bg); border-color: var(--err-border); color: var(--err-text); }
+
+.error-box {
+  margin-top: var(--gap-3);
+  padding: 10px var(--gap-3);
+  background: var(--err-bg);
+  border: 1px solid var(--err-border);
+  color: var(--err-text);
+  border-radius: var(--radius);
+  font-size: 12.5px;
+  overflow-wrap: anywhere;
+}
+
+/* --- Ladeanzeige ----------------------------------------------------------- */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: var(--gap-3);
+  font-size: 12.5px;
+  color: var(--accent);
+}
+
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--accent-soft);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: kimi-spin 0.8s linear infinite;
+}
+@keyframes kimi-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation-duration: 2.4s; }
+  button:active:not(:disabled) { transform: none; }
+  * { transition-duration: 0.01ms !important; }
+}

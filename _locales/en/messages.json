@@ -1,0 +1,325 @@
+{
+  "extName": {
+    "message": "Kimi AI Mail Assistant"
+  },
+  "extDescription": {
+    "message": "AI-assisted email replies via Kimi AI (Moonshot AI). Message content is transmitted to the Moonshot API."
+  },
+  "actionTitle": {
+    "message": "Reply with Kimi AI"
+  },
+  "popupTitle": {
+    "message": "Reply with Kimi AI"
+  },
+  "labelSubject": {
+    "message": "Subject:"
+  },
+  "labelAuthor": {
+    "message": "From:"
+  },
+  "labelInstruction": {
+    "message": "Instruction for the reply"
+  },
+  "placeholderInstruction": {
+    "message": "e.g. Thank them politely for the offer and accept."
+  },
+  "generateButton": {
+    "message": "Generate and insert reply"
+  },
+  "loadingText": {
+    "message": "Kimi AI is generating the reply …"
+  },
+  "noMessageSelected": {
+    "message": "No message selected"
+  },
+  "noSubject": {
+    "message": "(No subject)"
+  },
+  "unknownAuthor": {
+    "message": "(Unknown)"
+  },
+  "noticeNoBody": {
+    "message": "No readable text part was found in this message (e.g. image-only or encrypted mail)."
+  },
+  "openOptions": {
+    "message": "Open settings"
+  },
+  "consentRequired": {
+    "message": "Before replies can be generated, confirm the privacy notice in the settings and store an API key."
+  },
+  "optionsTitle": {
+    "message": "Kimi AI settings"
+  },
+  "privacyHeading": {
+    "message": "Privacy notice"
+  },
+  "privacyBody": {
+    "message": "When generating a reply, the sender, subject and body of the selected email are transmitted to the Moonshot AI API and processed there. This includes personal data of third parties who wrote to you. Only use this extension if you are entitled to do so. See PRIVACY.md for details."
+  },
+  "consentLabel": {
+    "message": "I have read the privacy notice and consent to transmitting message content to the Moonshot AI API."
+  },
+  "labelApiKey": {
+    "message": "Kimi API key"
+  },
+  "hintApiKey": {
+    "message": "The key is stored unencrypted in the Thunderbird profile (storage.local) and is included in profile backups. Use “Delete key” to remove it at any time."
+  },
+  "labelBaseUrl": {
+    "message": "API base URL"
+  },
+  "hintBaseUrl": {
+    "message": "Only these hosts are permitted: $HOSTS$. api.moonshot.ai belongs to platform.kimi.ai, api.moonshot.cn to the separate China platform — their keys are not interchangeable. Any other address would send your API key and message content to a foreign server.",
+    "placeholders": {
+      "hosts": {
+        "content": "$1"
+      }
+    }
+  },
+  "labelModel": {
+    "message": "Model"
+  },
+  "saveButton": {
+    "message": "Save settings"
+  },
+  "clearButton": {
+    "message": "Delete key"
+  },
+  "statusSaved": {
+    "message": "Settings saved."
+  },
+  "statusCleared": {
+    "message": "API key deleted and consent withdrawn."
+  },
+  "errUrlEmpty": {
+    "message": "Please provide an API base URL."
+  },
+  "errUrlMalformed": {
+    "message": "The API base URL is not a valid address."
+  },
+  "errUrlNotHttps": {
+    "message": "The API base URL must start with https://."
+  },
+  "errUrlHostNotAllowed": {
+    "message": "This host is not permitted. Only api.moonshot.cn and api.moonshot.ai are allowed."
+  },
+  "errUrlHasCredentials": {
+    "message": "The API base URL must not contain credentials."
+  },
+  "errUnsupportedModel": {
+    "message": "Invalid model identifier."
+  },
+  "errConsentMissing": {
+    "message": "Please confirm the privacy notice first."
+  },
+  "errSaveFailed": {
+    "message": "Saving failed: $DETAIL$",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errNoConsent": {
+    "message": "The privacy notice has not been confirmed yet. Please consent in the settings."
+  },
+  "errNoApiKey": {
+    "message": "Please enter your Kimi API key in the settings first."
+  },
+  "errNoPrompt": {
+    "message": "Please enter an instruction."
+  },
+  "errNoTab": {
+    "message": "No active tab could be determined."
+  },
+  "errReadMail": {
+    "message": "Error reading the message: $DETAIL$",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errTimeout": {
+    "message": "Timeout: the API did not respond within 60 seconds."
+  },
+  "errNetwork": {
+    "message": "Network error: the API could not be reached. ($DETAIL$)",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errUnauthorized": {
+    "message": "The API key was rejected. Please check it in the settings. ($DETAIL$)",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errRateLimited": {
+    "message": "Too many requests. Please wait a moment and try again. ($DETAIL$)",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errApi": {
+    "message": "API error ($STATUS$): $DETAIL$",
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      },
+      "detail": {
+        "content": "$2"
+      }
+    }
+  },
+  "errEmptyReply": {
+    "message": "The API returned an empty reply."
+  },
+  "errUnknown": {
+    "message": "Unknown error."
+  },
+  "errHostPermissionMissing": {
+    "message": "Access to $ORIGIN$ has not been granted. Please open the settings and save again; Thunderbird will then ask for the permission.",
+    "placeholders": {
+      "origin": {
+        "content": "$1"
+      }
+    }
+  },
+  "errPermissionDenied": {
+    "message": "Settings were saved, but access to $ORIGIN$ was denied. Without this permission no reply can be generated.",
+    "placeholders": {
+      "origin": {
+        "content": "$1"
+      }
+    }
+  },
+  "refreshModelsButton": {
+    "message": "Load available models"
+  },
+  "hintModel": {
+    "message": "This list comes from the extension's fallback list. “Load available models” queries /v1/models and shows exactly the models your account has access to. The stated context window determines how much message text is transmitted."
+  },
+  "statusModelsLoaded": {
+    "message": "Loaded $COUNT$ models.",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "errModelsFailed": {
+    "message": "Could not load models: $DETAIL$",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errModelsEmpty": {
+    "message": "The API returned no models."
+  },
+  "errApiUnavailable": {
+    "message": "This Thunderbird version does not provide the required messageDisplay API. Thunderbird 128 or newer is required."
+  },
+  "composeActionTitle": {
+    "message": "Write text with Kimi AI"
+  },
+  "composeTitle": {
+    "message": "Write text with Kimi AI"
+  },
+  "composeButton": {
+    "message": "Generate and insert text"
+  },
+  "labelRecipients": {
+    "message": "To:"
+  },
+  "noRecipients": {
+    "message": "(No recipients)"
+  },
+  "labelComposeInstruction": {
+    "message": "Instruction for the text"
+  },
+  "placeholderComposeInstruction": {
+    "message": "e.g. Ask for a meeting next week, keep the tone factual and brief."
+  },
+  "noticeContextOriginal": {
+    "message": "The original message is sent along as context."
+  },
+  "noticeContextDraft": {
+    "message": "The current draft text is sent along as context."
+  },
+  "noticeContextEmpty": {
+    "message": "The draft is empty — a new email will be written."
+  },
+  "errReadDraft": {
+    "message": "Error reading the draft: $DETAIL$",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errNoComposeTab": {
+    "message": "No compose window could be determined."
+  },
+  "suggestionsHeading": {
+    "message": "Reply suggestions"
+  },
+  "suggestReload": {
+    "message": "Reload"
+  },
+  "suggestLoading": {
+    "message": "Creating suggestions …"
+  },
+  "suggestManualHint": {
+    "message": "Automatic loading is off. Use “Reload” to request suggestions."
+  },
+  "errSuggestNone": {
+    "message": "No suggestions could be created."
+  },
+  "errSuggestUnparsable": {
+    "message": "The model's response contained no usable suggestions. “Reload” tries again."
+  },
+  "labelAutoSuggest": {
+    "message": "Load reply suggestions automatically"
+  },
+  "hintAutoSuggest": {
+    "message": "Creates suggestions on opening the popup for what a reply could cover. Each opening costs one model call — with this off you can still request them via “Reload”."
+  },
+  "suggestionsIntro": {
+    "message": "Clicking a topic generates the reply immediately."
+  },
+  "modelOption": {
+    "message": "$MODEL$ · $CONTEXT$ context",
+    "placeholders": {
+      "model": {
+        "content": "$1"
+      },
+      "context": {
+        "content": "$2"
+      }
+    }
+  },
+  "firstRunHeading": {
+    "message": "Setup — three steps"
+  },
+  "firstRunStep1": {
+    "message": "Read the privacy notice and tick the box below it."
+  },
+  "firstRunStep2": {
+    "message": "Enter your API key from platform.kimi.ai (starts with “sk-”)."
+  },
+  "firstRunStep3": {
+    "message": "Save — Thunderbird will then ask once for permission to access the API."
+  },
+  "statusSetupComplete": {
+    "message": "Setup complete. Open an email and click “Reply with Kimi AI” in the message view."
+  }
+}
