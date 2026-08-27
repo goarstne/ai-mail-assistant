@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/goarstne/kimi-ai-mail-assistant/actions/workflows/ci.yml"><img src="https://github.com/goarstne/kimi-ai-mail-assistant/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/Thunderbird-128%2B-0a84ff?style=flat-square&logo=thunderbird&logoColor=white" alt="Thunderbird 128+">
   <img src="https://img.shields.io/badge/Manifest-V3-2ea44f?style=flat-square" alt="Manifest V3">
   <img src="https://img.shields.io/badge/tests-61%20passing-2ea44f?style=flat-square" alt="61 tests passing">
@@ -173,7 +174,7 @@ MIT
 # Deutsch
 
 <p align="center">
-  <a href="#kimi-ai-mail-assistant">English</a> · <b>Deutsch</b>
+  <a href="#">English</a> · <b>Deutsch</b>
 </p>
 
 Eine Thunderbird-MailExtension, die E-Mail-Antworten mit **Kimi AI**
