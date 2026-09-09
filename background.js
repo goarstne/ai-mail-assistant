@@ -10,11 +10,11 @@
  */
 "use strict";
 
-const { validateBaseUrl, loadSettings, mailCharBudget } = globalThis.KimiConfig;
-const MailText = globalThis.KimiMailText;
+const { validateBaseUrl, loadSettings, mailCharBudget } = globalThis.MailAssistantConfig;
+const MailText = globalThis.MailAssistantMailText;
 
 /** Fehler mit i18n-Schluessel statt fertiger Meldung (N6). */
-class KimiError extends Error {
+class AssistantError extends Error {
   constructor(messageKey, substitution) {
     super(messageKey);
     this.messageKey = messageKey;
@@ -28,7 +28,7 @@ function t(key, substitution) {
 
 /** Baut die Fehlerantwort fuer das Popup - bereits lokalisiert. */
 function toErrorResponse(err) {
-  if (err instanceof KimiError) {
+  if (err instanceof AssistantError) {
     return { ok: false, error: t(err.messageKey, err.substitution) };
   }
   if (err && err.name === "AbortError") {
@@ -44,56 +44,46 @@ function toErrorResponse(err) {
  * endlos, und das Hintergrundskript haelt die Verbindung unbegrenzt offen.
  */
 async function callChatCompletions(settings, messages) {
+  const cfg = globalThis.MailAssistantConfig;
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), globalThis.KimiConfig.REQUEST_TIMEOUT_MS);
-
-  let response;
+  const timer = setTimeout(() => controller.abort(), cfg.REQUEST_TIMEOUT_MS);
   try {
-    response = await fetch(settings.baseUrl + "/chat/completions", {
+    const response = await fetch(settings.baseUrl + "/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + settings.apiKey
       },
-      // Die zulaessigen Parameter haengen am Modell - kimi-k3 lehnt
-      // `temperature` ab, `max_tokens` ist zugunsten von
-      // `max_completion_tokens` veraltet. Siehe buildRequestBody().
-      body: JSON.stringify(globalThis.KimiConfig.buildRequestBody(settings.model, messages)),
+      body: JSON.stringify(cfg.buildRequestBody(settings.model, messages, settings.provider, settings.modelMetadata[settings.model])),
+      redirect: "error",
       signal: controller.signal
     });
+    const data = await response.json().catch((err) => {
+      if (err && err.name === "AbortError") throw err;
+      return null;
+    });
+    // OpenRouter can also report a generation error inside an HTTP 200 body.
+    if (!response.ok || (data && data.error)) {
+      const detail = String((data && data.error && data.error.message) || response.statusText || "");
+      const status = !response.ok ? response.status : Number(data.error.code) || response.status;
+      if (status === 401 || status === 403) throw new AssistantError("errUnauthorized", detail);
+      if (status === 402) throw new AssistantError("errCredits", detail);
+      if (status === 429) throw new AssistantError("errRateLimited", detail);
+      throw new AssistantError("errApi", [String(status), detail]);
+    }
+    const choice = data && Array.isArray(data.choices) && data.choices[0];
+    if (choice && choice.finish_reason === "length") throw new AssistantError("errReplyTruncated");
+    const content = choice && choice.message && choice.message.content;
+    const reply = typeof content === "string" ? content.trim() : "";
+    if (!reply) throw new AssistantError("errEmptyReply");
+    return reply;
   } catch (err) {
-    if (err && err.name === "AbortError") throw err;
-    // Netzwerk-, DNS- oder CORS-Fehler kommen hier als generischer TypeError an.
-    throw new KimiError("errNetwork", String((err && err.message) || err));
+    if (err instanceof AssistantError || (err && err.name === "AbortError")) throw err;
+    throw new AssistantError("errNetwork", String((err && err.message) || err));
   } finally {
+    // Covers the response body as well as the initial response headers.
     clearTimeout(timer);
   }
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    const detail = (errData && errData.error && errData.error.message) || response.statusText || "";
-    if (response.status === 401 || response.status === 403) {
-      throw new KimiError("errUnauthorized", detail);
-    }
-    if (response.status === 429) {
-      throw new KimiError("errRateLimited", detail);
-    }
-    throw new KimiError("errApi", [String(response.status), detail]);
-  }
-
-  const data = await response.json().catch(() => null);
-
-  /**
-   * M6: `data.choices[0]?.message` setzte das `?.` hinter den Index. Lieferte
-   * die API `{}` oder ein Fehlerobjekt mit HTTP 200, gab es einen TypeError
-   * statt der gedachten "Leere Antwort"-Meldung.
-   */
-  const reply = data && Array.isArray(data.choices)
-    ? String((data.choices[0] && data.choices[0].message && data.choices[0].message.content) || "").trim()
-    : "";
-
-  if (!reply) throw new KimiError("errEmptyReply");
-  return reply;
 }
 
 function escapeHtml(str) {
@@ -146,14 +136,14 @@ async function insertReply(messageId, replyText) {
 async function prepareSettings() {
   const settings = await loadSettings(browser.storage);
 
-  // H3: Ohne ausdrueckliche Zustimmung verlaesst nichts den Rechner.
-  if (!settings.consentGiven) throw new KimiError("errNoConsent");
-  if (!settings.apiKey) throw new KimiError("errNoApiKey");
+  // H3: Ohne ausdrueckliche Zustimmung werden keine Mailinhalte uebertragen.
+  if (!settings.consentGiven) throw new AssistantError("errNoConsent");
+  if (!settings.apiKey) throw new AssistantError("errNoApiKey");
 
   // H2: Zweite Pruefung im Hintergrund - die Optionsseite ist nicht die
   // einzige moegliche Quelle des gespeicherten Wertes.
-  const urlCheck = validateBaseUrl(settings.baseUrl);
-  if (!urlCheck.ok) throw new KimiError(urlCheck.reason);
+  const urlCheck = validateBaseUrl(settings.baseUrl, settings.provider);
+  if (!urlCheck.ok) throw new AssistantError(urlCheck.reason);
   settings.baseUrl = urlCheck.url;
 
   /*
@@ -164,7 +154,7 @@ async function prepareSettings() {
    */
   const originPattern = new URL(settings.baseUrl).origin + "/*";
   const hasHostPermission = await browser.permissions.contains({ origins: [originPattern] });
-  if (!hasHostPermission) throw new KimiError("errHostPermissionMissing", originPattern);
+  if (!hasHostPermission) throw new AssistantError("errHostPermissionMissing", originPattern);
 
   return settings;
 }
@@ -172,8 +162,8 @@ async function prepareSettings() {
 /** Prueft und kuerzt die Nutzeranweisung. */
 function normalizePrompt(raw) {
   const userPrompt = String(raw || "").trim();
-  if (!userPrompt) throw new KimiError("errNoPrompt");
-  return MailText.truncate(userPrompt, globalThis.KimiConfig.MAX_PROMPT_CHARS).text;
+  if (!userPrompt) throw new AssistantError("errNoPrompt");
+  return MailText.truncate(userPrompt, globalThis.MailAssistantConfig.MAX_PROMPT_CHARS).text;
 }
 
 /** Antwort auf die angezeigte Nachricht. */
@@ -181,9 +171,9 @@ async function generateReply(request) {
   const settings = await prepareSettings();
   const userPrompt = normalizePrompt(request.userPrompt);
 
-  const cfg = globalThis.KimiConfig;
+  const cfg = globalThis.MailAssistantConfig;
   // M4: Kuerzung an genau einer Stelle, abhaengig vom Kontextfenster des Modells.
-  const budget = mailCharBudget(settings.model);
+  const budget = mailCharBudget(settings.model, settings.provider, settings.modelMetadata[settings.model]);
   const mailBody = MailText.truncate(request.mail.body || "", budget);
 
   const userMessage = MailText.buildUserMessage({
@@ -216,8 +206,8 @@ async function generateComposeText(request) {
   const settings = await prepareSettings();
   const userPrompt = normalizePrompt(request.userPrompt);
 
-  const cfg = globalThis.KimiConfig;
-  const budget = mailCharBudget(settings.model);
+  const cfg = globalThis.MailAssistantConfig;
+  const budget = mailCharBudget(settings.model, settings.provider, settings.modelMetadata[settings.model]);
   const draft = MailText.truncate(request.draft.body || "", budget);
 
   const userMessage = MailText.buildComposeMessage({
@@ -248,9 +238,9 @@ async function generateComposeText(request) {
  */
 async function suggestReplies(request) {
   const settings = await prepareSettings();
-  const cfg = globalThis.KimiConfig;
+  const cfg = globalThis.MailAssistantConfig;
 
-  const budget = mailCharBudget(settings.model);
+  const budget = mailCharBudget(settings.model, settings.provider, settings.modelMetadata[settings.model]);
   const body = MailText.truncate(request.context.body || "", budget);
 
   const userMessage = MailText.buildSuggestMessage({
@@ -267,7 +257,7 @@ async function suggestReplies(request) {
   ]);
 
   const suggestions = MailText.parseSuggestions(raw, cfg.MAX_SUGGESTIONS);
-  if (suggestions.length === 0) throw new KimiError("errSuggestUnparsable");
+  if (suggestions.length === 0) throw new AssistantError("errSuggestUnparsable");
 
   return { ok: true, suggestions };
 }
@@ -287,7 +277,7 @@ browser.runtime.onMessage.addListener((request) => {
   return handler(request).catch((err) => {
     // Falls das Popup schon geschlossen ist, sieht der Nutzer die Meldung
     // nicht mehr - dann bleibt die Fehlerkonsole die einzige Spur.
-    console.error("[Kimi AI Mail Assistant]", err);
+    console.error("[AI Mail Assistant]", err);
     return toErrorResponse(err);
   });
 });
@@ -303,11 +293,11 @@ async function openSetupPage() {
   try {
     await browser.tabs.create({ url: browser.runtime.getURL("options/options.html") });
   } catch (err) {
-    console.warn("[Kimi AI Mail Assistant] tabs.create fehlgeschlagen:", err);
+    console.warn("[AI Mail Assistant] tabs.create fehlgeschlagen:", err);
     try {
       await browser.runtime.openOptionsPage();
     } catch (fallbackErr) {
-      console.error("[Kimi AI Mail Assistant] Einrichtungsseite ging nicht auf:", fallbackErr);
+      console.error("[AI Mail Assistant] Einrichtungsseite ging nicht auf:", fallbackErr);
     }
   }
 }

@@ -1,241 +1,158 @@
 # Entwicklung
 
-Technische Dokumentation zum Kimi AI Mail Assistant. Überblick, Installation
-und Funktionsumfang stehen im [README](../README.md); der Code-Audit mit der
-manuellen Testcheckliste in [AUDIT.md](AUDIT.md).
+AI Mail Assistant ist eine Thunderbird-MailExtension ohne Laufzeitabhängigkeiten.
+Installation und Bedienung stehen im [README](../README.md).
 
-## Voraussetzungen
+## Voraussetzungen und Build
 
-- Thunderbird **128 oder neuer** (Manifest V3)
-- Ein API-Key von Moonshot AI (`sk-…`)
-- Für Entwicklung und Build: Node.js 18+, `zip`, `python3`
-
-## Installation
-
-```bash
-npm run build
-```
-
-Das Skript prüft Manifest, i18n-Schlüssel und Tests und legt anschließend
-`dist/kimi-ai-mail-assistant-<version>.xpi` an.
-
-In Thunderbird: **Extras → Add-ons und Themes → Zahnrad → „Add-on aus Datei
-installieren…"** und die `.xpi` auswählen.
-
-Nach der Installation öffnet sich die Einrichtungsseite von selbst — auch beim
-Aktualisieren einer vorhandenen Version, solange Key oder Zustimmung fehlen.
-Ist bereits alles eingerichtet, bleibt sie weg.
-
-Dort in drei Schritten: Datenschutzhinweis bestätigen, API-Key eintragen,
-speichern. Thunderbird fragt beim Speichern einmalig nach der Freigabe für den
-API-Zugriff. Vorher bleibt die Oberfläche gesperrt.
-
-<details>
-<summary>Alternative: temporär laden (nur für Entwicklung)</summary>
-
-**Extras → Add-ons und Themes → Zahnrad → Add-ons debuggen → „Temporäres Add-on
-laden…"** und `manifest.json` auswählen. Nach jedem Thunderbird-Neustart
-verschwindet das Add-on wieder, und bei ausgehängtem Datenträger ist es kaputt —
-für den Alltag deshalb die `.xpi` benutzen.
-</details>
-
-## Benutzung
-
-1. Eine E-Mail anzeigen.
-2. In der Nachrichtenanzeige auf **„Mit Kimi AI antworten"** klicken.
-3. Anweisung eingeben, z. B. *„Bedanke dich höflich für das Angebot und sage zu."*
-4. **„Antwort generieren und einfügen"** — es öffnet sich ein Verfassen-Fenster
-   mit der Antwort über dem zitierten Original.
-
-Das Popup darf dabei geschlossen werden: der Vorgang läuft im Hintergrundskript
-weiter und öffnet das Verfassen-Fenster auch dann.
-
-## Antwortvorschläge
-
-Beim Öffnen des Popups schlägt das Modell drei bis vier Antwortrichtungen vor —
-jede mit einem Titel und einem Satz, der beschreibt, was in dieser Antwort
-stehen würde. **Ein Klick erzeugt die Antwort sofort.** Die verwendete Anweisung
-landet trotzdem im Eingabefeld: so ist nachvollziehbar, womit erzeugt wurde, und
-nach einem Fehlschlag lässt sie sich anpassen und erneut abschicken.
-
-Wer selbst formulieren will, schreibt direkt ins Eingabefeld und benutzt den
-Knopf darunter.
-
-Das kostet einen zusätzlichen Modellaufruf pro Öffnen. Wer meist selbst
-formuliert, schaltet in den Einstellungen **„Antwortvorschläge automatisch
-laden"** ab und fordert sie bei Bedarf über „Neu laden" an.
-
-Schlägt der Aufruf fehl oder liefert das Modell nichts Verwertbares, erscheint
-ein Hinweis — die Erweiterung bleibt über das Eingabefeld vollständig benutzbar.
-
-## Im Verfassen-Fenster
-
-Neben der Antwort auf eine angezeigte Mail gibt es die Schaltfläche **„Text mit
-Kimi AI schreiben"** in der Werkzeugleiste des Verfassen-Fensters. Sie schreibt
-Text in den Entwurf, den du gerade offen hast — für eine neue Mail genauso wie
-für eine Antwort, die du schon angefangen hast.
-
-Als Kontext dient bei einer Antwort die ursprüngliche Nachricht (über
-`relatedMessageId` sauber gelesen, nicht das Zitat im Entwurf), sonst der
-bisherige Entwurfstext. Ist der Entwurf leer, wird das dem Modell gesagt.
-
-## Aufbau
-
-```
-manifest.json          MV3-Manifest, Add-on-ID, Berechtigungen
-background.js          API-Aufruf, Fehlerbehandlung, Einfügen der Antwort
-lib/config.js          Konstanten, Host-Allowlist, URL-Validierung, Settings
-lib/mailtext.js        MIME-Auswahl, HTML→Text, Kürzung, Prompt-Aufbau
-lib/i18n.js            data-i18n-Attribute im Markup übersetzen
-lib/ui.js              Gemeinsame Popup-Bausteine, Vorschlagsdarstellung
-styles/base.css        Farben, Abstände, Bedienelemente für alle Ansichten
-popup/popup.*          Popup an der Nachrichtenanzeige
-popup/compose.*        Popup im Verfassen-Fenster
-options/               Einstellungen inkl. Datenschutz-Zustimmung
-_locales/{de,en}/      Oberflächentexte
-test/                  Unit-Tests (node:test, keine Abhängigkeiten)
-scripts/validate.mjs   Manifest-, Datei- und i18n-Konsistenzprüfung
-scripts/build.sh       Paketierung zur .xpi
-scripts/preview.mjs    Oberflächenvorschau für die Entwicklung
-docs/AUDIT.md          Code-Audit und was daraus wurde
-```
-
-### Warum die Logik im Hintergrundskript liegt
-
-Popups einer `message_display_action` werden geschlossen, sobald sie den Fokus
-verlieren. Läuft der API-Aufruf im Popup, zerstört ein Klick ins Hauptfenster das
-Dokument und bricht `fetch` ab — ohne Meldung. Das Popup schickt deshalb nur
-einen Auftrag an `background.js` und darf danach sterben.
-
-Die einzige Ausnahme: schlägt der Auftrag fehl, *nachdem* das Popup geschlossen
-wurde, sieht niemand die Meldung. Sie steht dann in der Fehlerkonsole
-(**Extras → Entwicklerwerkzeuge → Fehlerkonsole**), Präfix
-`[Kimi AI Mail Assistant]`.
-
-### Wie der Mailtext in den Prompt kommt
-
-`messages.getFull()` liefert die MIME-Struktur. `lib/mailtext.js` sucht darin
-gezielt `text/plain`, ersatzweise `text/html`, und überspringt alles mit
-Dateinamen oder `Content-Disposition: attachment`. HTML wird vor dem Parsen um
-Zeilenumbrüche an den Blockgrenzen ergänzt, damit `textContent` aus
-`<p>Hallo</p><p>Welt</p>` nicht `HalloWelt` macht.
-
-### Wie Prompt Injection abgewehrt wird
-
-Der Mailinhalt ist nicht vertrauenswürdig — jeder kann dir schreiben. Zwei
-unabhängige Schranken:
-
-1. **Maskierung.** In Absender, Betreff, Mailtext und Nutzeranweisung werden
-   `<` und `>` zu `&lt;`/`&gt;`. Da die Blöcke selbst Winkelklammern benutzen,
-   gilt danach: der unvertraute Anteil enthält kein einziges `<` und kann deshalb
-   kein Element öffnen oder schließen. Genau das prüft ein Test.
-2. **Nonce.** `<email_content id="…">` trägt pro Anfrage eine zufällige Kennung
-   aus `crypto.getRandomValues`. Selbst bei einer Lücke in Schranke 1 kennt ein
-   Angreifer sie nicht.
-
-Die Regeln im System-Prompt kommen obendrauf — sie sind eine Bitte an das Modell,
-kein Mechanismus, und tragen die Absicherung nicht allein.
-
-## Entwicklung
+Node.js 18+, `zip` und `python3`; Thunderbird 128+ für den Anwendungstest.
+Ein API-Key wird nur für Live-Anfragen benötigt, nicht für Tests oder Build.
 
 ```bash
 npm run check
+npm run build
 ```
 
-Führt `scripts/validate.mjs` (Manifest gültig, referenzierte Dateien vorhanden,
-jeder i18n-Schlüssel in allen Sprachen definiert und benutzt) und die Unit-Tests
-aus. Einzeln:
+Der Build prüft Manifest, Dateiverweise, Element-IDs, Übersetzungen und Tests und
+packt `dist/ai-mail-assistant-<version>.xpi`. Entwicklungsdateien und Tests sind
+nicht im Paket. `npm install` installiert ESLint für `npm run lint`.
 
-```bash
-npm test
+Die interne Add-on-ID `kimi-mail-assistant@local.extension` bleibt trotz
+Umbenennung unverändert. Thunderbird erkennt die XPI dadurch als Update und
+behält den Erweiterungsspeicher. Die Versionsnummern in `manifest.json` und
+`package.json` müssen übereinstimmen.
+
+## Aufbau
+
+| Datei | Aufgabe |
+|---|---|
+| `manifest.json` | MV3, stabile Add-on-ID, Berechtigungen |
+| `background.js` | Generierungsaufträge, API-Aufruf, Fehlermeldungen, Einfügen in Entwürfe |
+| `lib/config.js` | Anbieter, Endpunktprüfung, Modelle, Speicherformat und Migration |
+| `lib/mailtext.js` | MIME-Auswahl, Textbegrenzung, Prompt-Aufbau, Vorschlagsparser |
+| `lib/ui.js`, `lib/i18n.js` | Gemeinsame Oberfläche und Übersetzungen |
+| `options/` | Anbieterauswahl, Zugangsdaten, Zustimmung und Modellkatalog |
+| `popup/` | Nachrichten- und Verfassen-Popup |
+| `_locales/` | Deutsch und Englisch |
+
+Die Bibliotheken sind klassische Skripte mit `globalThis.MailAssistant…`-Namespaces.
+Die Popups schicken Aufträge an das Hintergrundskript, damit Generierungen beim
+Schließen eines Popups weiterlaufen. Es wird ausschließlich ein Entwurf erstellt
+oder ergänzt; die Erweiterung ruft keine API zum Mailversand auf.
+
+## Anbieter und Speicherformat
+
+`PROVIDERS` enthält drei feste Kontoprofile:
+
+- `moonshot`: `https://api.moonshot.ai/v1`
+- `moonshot-cn`: `https://api.moonshot.cn/v1`
+- `openrouter`: `https://openrouter.ai/api/v1`
+
+Keys, Zustimmung, Modell und Modellkatalog sind pro Profil getrennt. Die URLs
+sind in der Oberfläche nur lesbar. Die Validierung akzeptiert ausschließlich den
+zum Profil passenden, vollständigen Endpunkt. Zusätzliche Ports, Pfade,
+Zugangsdaten und URL-Parameter werden abgewiesen. Beide Fetch-Pfade verwenden
+`redirect: "error"`.
+
+```text
+provider: aktiver Profilname
+providers:
+  <Profilname>:
+    apiKey
+    consentGiven
+    model
+    modelCache: Modell-IDs
+    modelMetadata: pro Modell contextTokens und maxCompletionTokens
+autoSuggest: globale Einstellung
 ```
 
-```bash
-npm run validate
-```
+`loadProviderState()` liest 1.x-Einstellungen in das Profil des ursprünglichen
+Endpunkts ein, ohne etwas zu schreiben. Ein fremder/ungültiger alter Endpunkt
+übernimmt weder Key noch Zustimmung. `saveProviderSettings()` speichert die
+vollständigen Profile und entfernt erst danach die alten Felder. Ein bereits
+vorhandener `providers`-Speicher wird niemals aus alten Keys wieder aufgefüllt.
 
-`npm run lint` braucht ein `npm install` vorweg (ESLint ist die einzige
-Abhängigkeit; die Erweiterung selbst hat keine).
+Die Optionsseite hält Änderungen beim Wechsel des Anbieters im Arbeitsspeicher.
+**Speichern** aktiviert und speichert das aktuelle Profil. Der Modellkatalog
+wird ebenfalls erst dann dauerhaft gespeichert. **Key löschen** wirkt sofort
+auf das ausgewählte Profil, unabhängig von einer ungültigen ungespeicherten
+Modell-ID. Ein Widerruf der Zustimmung muss auch mit vorhandenem Key und ohne
+neue Host-Freigabe speicherbar sein.
 
-### Oberfläche ansehen
+MV3-Hostrechte werden vor Netzwerkaufrufen geprüft. `permissions.request()` muss
+im Klick-Handler vor dem ersten anderen `await` stehen, damit die Nutzergeste
+nicht verloren geht. Die Oberfläche sperrt während Speichern/Laden sämtliche
+bearbeitbaren Felder, damit ein später eintreffender Katalog nicht einem anderen
+Profil zugeordnet wird.
+
+## API und Modelle
+
+Kimi verwendet weiterhin modellabhängige Parameter: `moonshot-v1` bekommt
+`temperature` und `max_tokens`, Kimi K2/K3 `max_completion_tokens`, K3 zusätzlich
+`reasoning_effort: "low"`.
+
+OpenRouter verwendet `POST /api/v1/chat/completions`, Bearer-Authentifizierung,
+`model`, `messages` und das normalisierte `max_completion_tokens`. Es werden keine
+Kimi-spezifischen Sampling- oder Reasoning-Parameter auf fremde Modelle übertragen.
+Referenz: [Chat completions](https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request).
+
+`GET {baseUrl}/models` lädt die Modellliste. OpenRouter-IDs erlauben einen
+Anbieterpräfix und einen optionalen Variantensuffix wie `:free`. Reine Bild-,
+Audio- und Embedding-Modelle werden über `architecture.output_modalities`
+ausgefiltert, sofern der Katalog die Modalitäten liefert. Die Optionsseite bietet
+ein Eingabefeld mit Datalist, sodass auch eine manuelle ID möglich ist.
+
+`context_length` und `top_provider.max_completion_tokens` aus dem Katalog werden
+validiert und gespeichert. Bei OpenRouter bleibt das Ausgabelimit unter einem
+Viertel des Kontextfensters, maximal 8000 Token und höchstens dem Kataloglimit.
+Unbekannte Router-Modelle verwenden 8192 Token Kontext statt einer Schätzung aus
+dem Modellnamen. Mailtext wird nach Abzug von Ausgabe- und Promptbudget begrenzt.
+Referenz: [Models](https://openrouter.ai/docs/guides/overview/models).
+
+Der Chat-Timeout beträgt 60 Sekunden und umfasst auch das Lesen des Response-
+Bodys. Der Modellkatalog hat einen eigenen 20-Sekunden-Timeout. HTTP 402 und
+Fehlerobjekte in HTTP-200-Antworten werden explizit behandelt. Bei
+`finish_reason: "length"` wird kein unvollständiger Text eingefügt.
+
+## Testabdeckung
+
+93 Node-Tests prüfen unter anderem:
+
+- MIME-Auswahl, Prompt-Maskierung, Nonces und Vorschlagsparser.
+- Alte Kimi-Einstellungen, Anbietertrennung, Key-Löschung und Widerruf.
+- Modell-IDs, feste Endpunkte, Kontext- und Ausgabelimits.
+- Options-Handler, Host-Freigaben und Modellkatalog mit simuliertem DOM.
+- Hintergrundabläufe für Antworten, Entwürfe und Vorschläge mit simulierten
+  Thunderbird- und Fetch-APIs; einschließlich Fehlern und Timeout beim Body-Lesen.
+
+Das ersetzt keinen vollständigen Live-Test mit Thunderbird und einem echten
+Anbieterkonto. Der frühere Audit in [AUDIT.md](AUDIT.md) dokumentiert den Stand
+vor der OpenRouter-Integration.
+
+### Manuelle Prüfung für 1.8.0
+
+- Über ein vorhandenes 1.7.0-Profil aktualisieren: genau ein Add-on, gleicher
+  Speicher, bestehende Kimi-Konfiguration weiterhin ausgewählt.
+- OpenRouter wählen: kein übernommener Kimi-Key und keine übernommene Zustimmung.
+- Modellkatalog laden, Modell auswählen und speichern; Host-Freigabe bestätigen.
+- Mit erfundener Testkorrespondenz Vorschläge, Antwort und Entwurfstext erzeugen.
+- Kimi international und China separat prüfen; Schlüssel bleiben beim Endpunkt.
+- Zustimmung widerrufen und Key löschen; bei fehlender Zustimmung keine
+  Generierungsanfrage. Fehlende oder abgelehnte Hostrechte verständlich melden.
+- Helle/dunkle Darstellung, Deutsch/Englisch, Tastaturbedienung und Datalist in
+  Thunderbird prüfen.
+
+## Vorschau und Screenshots
 
 ```bash
 npm run preview
+npm run shots
 ```
 
-Erzeugt `.preview/` aus denselben HTML- und CSS-Dateien, die auch das Add-on
-benutzt, mit einem gestubbten `browser`-Objekt. Mit einem beliebigen statischen
-Server öffnen, z. B. `python3 -m http.server 8731 --directory .preview`.
+`.preview/` enthält dieselben HTML-/CSS-Dateien wie das Paket, mit einem
+`browser`-Stub und synthetischen Daten. Fetch wird simuliert; Vorschau-Klicks
+kontaktieren keinen echten Anbieter. `?provider=openrouter` zeigt die
+OpenRouter-Einrichtung. Weitere Parameter: `lang=de|en`, `theme=light|dark`,
+`key=0`, `consent=0`, `suggest=off|slow|fail`, `body=empty`, `reply=fail`.
 
-Zustände, die man im Betrieb kaum zu Gesicht bekommt, lassen sich über die
-Adresszeile schalten — `?consent=0`, `?key=0`, `?suggest=slow`, `?suggest=fail`,
-`?suggest=off`, `?body=empty`, `?reply=fail`. Die Übersichtsseite verlinkt sie.
-
-Das ersetzt keinen Test in Thunderbird: der Stub bildet die APIs nach, nicht ihr
-Verhalten. Für Layout, Farben, Zustände und Tastaturbedienung reicht er.
-
-### Testabdeckung
-
-`test/` deckt die reinen Funktionen aus `lib/` ab: URL-Allowlist, Modell- und
-Settings-Normalisierung, Request-Parameter je Modell, Zeichenbudget,
-MIME-Part-Auswahl, Blockumbrüche, Whitespace, Kürzung, Prompt-Aufbau, das
-Einlesen der Vorschläge und die Injection-Invariante. Jeder Export der
-`lib/`-Bausteine ist entweder in der Laufzeit benutzt oder hier geprüft.
-
-Nicht abgedeckt: alles, was Thunderbird-APIs oder ein echtes DOM braucht —
-`htmlToText` mit echtem `DOMParser`, `insertReply`, der `fetch`-Pfad. Node hat
-keinen `DOMParser`, und die Erweiterung soll abhängigkeitsfrei bleiben. Diese
-Pfade sind manuell in Thunderbird zu prüfen; die Liste steht in
-[AUDIT.md](AUDIT.md#manuelle-tests).
-
-## Modelle
-
-Die Request-Parameter hängen am Modell und werden in `buildRequestBody()`
-(`lib/config.js`) gesetzt: `moonshot-v1` bekommt `temperature` und `max_tokens`,
-alle anderen `max_completion_tokens`, `kimi-k3` zusätzlich `reasoning_effort`
-(auf `low`, weil der Anbieter-Default `max` für eine E-Mail unnötig teuer ist).
-Ein pauschal mitgesendetes `temperature` quittiert `kimi-k3` mit HTTP 400.
-
-Die Erweiterung schreibt keine Modellliste fest. In den Einstellungen holt
-**„Verfügbare Modelle laden"** die Liste über `GET {baseUrl}/models` — das sind
-genau die Modelle, die dein Account freigeschaltet hat. Das Ergebnis wird
-zwischengespeichert.
-
-Bis dahin steht eine Rückfallliste zur Verfügung (`kimi-k3`,
-`kimi-k2.7-code-highspeed`, `kimi-k2.6`, `kimi-k2.5`, `moonshot-v1-*`);
-Standard ist `kimi-k3`.
-
-Das Kontextfenster wird aus der Modell-ID abgeleitet (`lib/config.js`,
-`contextTokensFor`) und bestimmt, wie viel Mailtext übertragen wird. Für
-unbekannte IDs gilt ein konservativer Rückfall von 128K: zu früh kürzen kostet
-Kontext, zu spät kürzen lässt den Request an einem API-Fehler scheitern.
-
-## Sprache der Antwort
-
-Die Antwort wird immer in der Sprache der E-Mail verfasst — auch wenn die
-Anweisung deutsch ist und die Mail englisch. Das ist dreifach abgesichert:
-als Regel 1 im System-Prompt, als Erinnerung am Ende des Prompts, und dadurch,
-dass die Vorschläge ihre Anweisung selbst in der Sprache der E-Mail formulieren.
-
-Die doppelte Nennung ist kein Versehen: eine einmal genannte Vorgabe in der
-Mitte eines langen Prompts wird deutlich unzuverlässiger befolgt als eine, die
-am Anfang und am Ende steht.
-
-Im Verfassen-Fenster gilt die Sprache des Entwurfs; ist er leer, die der
-Anweisung.
-
-## Grenzen
-
-- Ein Modellaufruf pro Klick, kein Streaming — bei langen Antworten dauert es.
-- Das Kontextfenster unbekannter Modelle wird geschätzt, nicht abgefragt.
-- Anhänge werden nicht gelesen.
-- Verschlüsselte Nachrichten liefern keinen Textteil; das Popup sagt das und
-  sperrt den Knopf.
-- Sehr lange Mails werden gekürzt. Das Modell wird darauf hingewiesen, der
-  Nutzer nicht sichtbar.
-- Der API-Key liegt unverschlüsselt in `storage.local`. Thunderbird bietet
-  Erweiterungen keinen geschützten Schlüsselspeicher an.
-
-## Lizenz
-
-MIT
+`shots` benötigt Chrome/Chromium und aktualisiert die Screenshots im Repository.

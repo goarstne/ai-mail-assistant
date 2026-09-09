@@ -146,6 +146,24 @@ const store = {
   modelCache: ["kimi-k3", "kimi-k2.7-code-highspeed", "kimi-k2.6", "moonshot-v1-8k"]
 };
 
+if (FLAGS.get("provider") === "openrouter") {
+  store.provider = "openrouter";
+  store.providers = { openrouter: {
+    apiKey: store.apiKey, consentGiven: store.consentGiven,
+    model: "moonshotai/kimi-k2.5",
+    modelCache: ["openrouter/auto", "moonshotai/kimi-k2.5"],
+    modelMetadata: { "moonshotai/kimi-k2.5": { contextTokens: 262144, maxCompletionTokens: 8000 } }
+  } };
+}
+
+// Preview interactions never contact a real API or use a real key.
+globalThis.fetch = async (url) => ({
+  ok: true, status: 200,
+  json: async () => ({ data: url.includes("openrouter.ai")
+    ? [{ id: "openrouter/auto" }, { id: "moonshotai/kimi-k2.5", context_length: 262144, architecture: { output_modalities: ["text"] } }]
+    : [{ id: "kimi-k3" }, { id: "moonshot-v1-8k" }] })
+});
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 globalThis.browser = {
@@ -165,7 +183,8 @@ globalThis.browser = {
   storage: {
     local: {
       async get(defaults) { return { ...defaults, ...store }; },
-      async set(values) { Object.assign(store, values); }
+      async set(values) { Object.assign(store, values); },
+      async remove(keys) { for (const key of keys) delete store[key]; }
     }
   },
   tabs: { async query() { return [{ id: 1 }]; } },
@@ -245,7 +264,7 @@ for (const [page] of PAGES) {
 // Kopfbild fuer das README - eigene Seite, damit scripts/shots.mjs sie wie
 // jede andere Ansicht aufnehmen kann.
 const banner = `<!DOCTYPE html>
-<html lang="de" data-theme="dark"><head><meta charset="utf-8"><title>Kimi AI Mail Assistant</title>
+<html lang="de" data-theme="dark"><head><meta charset="utf-8"><title>AI Mail Assistant</title>
 <link rel="stylesheet" href="styles/base.css">
 <style>
   body { margin: 0; width: 1280px; height: 440px; display: flex; align-items: center;
@@ -266,7 +285,7 @@ const banner = `<!DOCTYPE html>
   <div class="wrap">
     <div class="top">
       <img src="icons/icon.svg" alt="">
-      <h1>Kimi AI Mail Assistant</h1>
+      <h1>AI Mail Assistant</h1>
     </div>
     <p class="sub">Antworten auf E-Mails in Thunderbird — mit <strong>Themenvorschlägen</strong>,
       die sagen, <em>was</em> in der Antwort stünde, bevor sie geschrieben wird.</p>
@@ -278,16 +297,16 @@ const banner = `<!DOCTYPE html>
       <span class="chip">Prompt-Injection-Schutz</span>
       <span class="chip">Host-Allowlist</span>
       <span class="chip">Zustimmungspflicht</span>
-      <span class="chip">61 Tests</span>
+      <span class="chip">93 Tests</span>
     </div>
   </div>
-  <div class="foot">Thunderbird 128+<br>Kimi K3 · Moonshot AI</div>
+  <div class="foot">Thunderbird 128+<br>OpenRouter · Kimi / Moonshot AI</div>
 </body></html>
 `;
 writeFileSync(join(OUT, "banner.html"), banner);
 
 const index = `<!DOCTYPE html>
-<html lang="de"><head><meta charset="utf-8"><title>Kimi AI - Oberflächenvorschau</title>
+<html lang="de"><head><meta charset="utf-8"><title>AI Mail Assistant - Oberflächenvorschau</title>
 <link rel="stylesheet" href="styles/base.css">
 <style>
   body { padding: 24px; }
@@ -310,6 +329,7 @@ const index = `<!DOCTYPE html>
     <strong>Zustände:</strong>
 ${[
   ["popup/popup.html", "Regelfall"],
+  ["options/options.html?provider=openrouter", "OpenRouter-Einstellungen"],
   ["popup/popup.html?consent=0", "Zustimmung fehlt"],
   ["popup/popup.html?key=0", "Kein API-Key"],
   ["popup/popup.html?suggest=slow", "Vorschläge laden"],

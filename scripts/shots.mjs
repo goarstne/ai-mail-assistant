@@ -94,12 +94,16 @@ const SHOTS = [
   { file: "options-en.png",       page: "options/options.html", query: "lang=en&theme=light", width: 880, fallback: 1200 },
   { file: "options-setup-en.png", page: "options/options.html", query: "lang=en&theme=light&key=0&consent=0", width: 880, fallback: 1300 },
 
+  { file: "options-openrouter-en.png", page: "options/options.html", query: "lang=en&theme=light&provider=openrouter", width: 880, fallback: 1400 },
+
   // Deutsch
   { file: "popup-reply.png",      page: "popup/popup.html",     query: "lang=de&theme=light", width: 412, fallback: 900 },
   { file: "popup-dark.png",       page: "popup/popup.html",     query: "lang=de&theme=dark",  width: 412, fallback: 900 },
   { file: "popup-compose.png",    page: "popup/compose.html",   query: "lang=de&theme=light", width: 412, fallback: 900 },
   { file: "options.png",          page: "options/options.html", query: "lang=de&theme=light", width: 880, fallback: 1200 },
   { file: "options-setup.png",    page: "options/options.html", query: "lang=de&theme=light&key=0&consent=0", width: 880, fallback: 1300 },
+
+  { file: "options-openrouter.png", page: "options/options.html", query: "lang=de&theme=light&provider=openrouter", width: 880, fallback: 1400 },
 
   { file: "banner.png",           page: "banner.html",          query: "theme=dark", width: 1280, fallback: 440, fixed: true }
 ];

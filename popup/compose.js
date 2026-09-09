@@ -7,13 +7,13 @@
  */
 "use strict";
 
-const { translate, applyToDocument } = globalThis.KimiI18n;
-const MailText = globalThis.KimiMailText;
-const Ui = globalThis.KimiUi;
+const { translate, applyToDocument } = globalThis.MailAssistantI18n;
+const MailText = globalThis.MailAssistantMailText;
+const Ui = globalThis.MailAssistantUi;
 const $ = Ui.$;
 
 let composeTabId = null;
-let draftContext = { recipients: "", subject: "", body: "" };
+const draftContext = { recipients: "", subject: "", body: "" };
 
 /** Formatiert die Empfaengerliste; Eintraege koennen Strings oder Objekte sein. */
 function formatRecipients(list) {
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // bleibt der Bereich deshalb ausgeblendet.
     if (draftContext.body) {
       Ui.setSuggestionState("idle");
-      const { autoSuggest } = await globalThis.KimiConfig.loadSettings(browser.storage);
+      const { autoSuggest } = await globalThis.MailAssistantConfig.loadSettings(browser.storage);
       if (autoSuggest) {
         Ui.loadSuggestions(suggestionContext(), translate, applySuggestion);
       } else {

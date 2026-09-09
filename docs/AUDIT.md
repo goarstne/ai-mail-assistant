@@ -1,3 +1,6 @@
+> Historischer Audit vor Version 1.8.0. Die OpenRouter-Integration und ihre
+> aktuelle Testabdeckung sind in [DEVELOPMENT.md](DEVELOPMENT.md) dokumentiert.
+
 # Code-Audit
 
 Auditiert: Version 1.0.0 · Behoben in: 1.1.0 · Datum: 2026-08-27

@@ -23,37 +23,42 @@
       </ol>
     </section>
 
+    <div class="field">
+      <label for="provider" data-i18n="labelProvider"></label>
+      <select id="provider"></select>
+      <p class="hint" data-i18n="hintProvider"></p>
+    </div>
+
     <!-- H3: Datenschutzhinweis mit ausdruecklicher Zustimmung. -->
     <section class="privacy notice" aria-labelledby="privacyHeading">
       <h3 id="privacyHeading" data-i18n="privacyHeading"></h3>
-      <p data-i18n="privacyBody"></p>
+      <p id="privacyBody"></p>
       <label class="checkbox">
         <input type="checkbox" id="consentGiven">
-        <span data-i18n="consentLabel"></span>
+        <span id="consentLabel"></span>
       </label>
     </section>
 
     <div class="field">
       <label for="apiKey" data-i18n="labelApiKey"></label>
       <input type="password" id="apiKey" placeholder="sk-…" autocomplete="off" spellcheck="false">
-      <p class="hint" data-i18n="hintApiKey"></p>
+      <p class="hint" id="apiKeyHint"></p>
     </div>
 
     <div class="field">
       <label for="baseUrl" data-i18n="labelBaseUrl"></label>
-      <input type="text" id="baseUrl" value="https://api.moonshot.ai/v1" spellcheck="false">
+      <input type="text" id="baseUrl" readonly spellcheck="false">
       <p class="hint" id="baseUrlHint"></p>
     </div>
 
     <div class="field">
       <label for="model" data-i18n="labelModel"></label>
-      <!-- Die Auswahl wird aus dem Modell-Cache bzw. der Rueckfallliste
-           gefuellt und laesst sich ueber /v1/models aktualisieren. -->
-      <select id="model"></select>
+      <input type="text" id="model" list="modelOptions" autocomplete="off" spellcheck="false" aria-describedby="modelHint">
+      <datalist id="modelOptions"></datalist>
       <div class="inline-action">
         <button id="refreshModels" type="button" class="secondary" data-i18n="refreshModelsButton"></button>
       </div>
-      <p class="hint" data-i18n="hintModel"></p>
+      <p class="hint" id="modelHint" data-i18n="hintModel"></p>
     </div>
 
     <div class="field">

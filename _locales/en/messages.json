@@ -1,15 +1,15 @@
 {
   "extName": {
-    "message": "Kimi AI Mail Assistant"
+    "message": "AI Mail Assistant"
   },
   "extDescription": {
-    "message": "AI-assisted email replies via Kimi AI (Moonshot AI). Message content is transmitted to the Moonshot API."
+    "message": "AI-assisted email replies with OpenRouter or Kimi / Moonshot AI. Message content is sent to your selected provider."
   },
   "actionTitle": {
-    "message": "Reply with Kimi AI"
+    "message": "Reply with AI"
   },
   "popupTitle": {
-    "message": "Reply with Kimi AI"
+    "message": "Reply with AI"
   },
   "labelSubject": {
     "message": "Subject:"
@@ -27,7 +27,7 @@
     "message": "Generate and insert reply"
   },
   "loadingText": {
-    "message": "Kimi AI is generating the reply …"
+    "message": "AI is generating the reply …"
   },
   "noMessageSelected": {
     "message": "No message selected"
@@ -48,28 +48,38 @@
     "message": "Before replies can be generated, confirm the privacy notice in the settings and store an API key."
   },
   "optionsTitle": {
-    "message": "Kimi AI settings"
+    "message": "AI Mail Assistant settings"
   },
   "privacyHeading": {
     "message": "Privacy notice"
   },
   "privacyBody": {
-    "message": "When generating a reply, the sender, subject and body of the selected email are transmitted to the Moonshot AI API and processed there. This includes personal data of third parties who wrote to you. Only use this extension if you are entitled to do so. See PRIVACY.md for details."
+    "message": "Reply suggestions and generated replies send the sender, subject, message text and your instruction to the selected Moonshot AI service. When composing, recipients and draft text may be included instead. This can contain personal data of other people. Only use this if you are entitled to share the data. Loading the model list sends the API key but no email content."
   },
   "consentLabel": {
-    "message": "I have read the privacy notice and consent to transmitting message content to the Moonshot AI API."
+    "message": "I consent to sending message content through $PROVIDER$ as described above.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
   },
   "labelApiKey": {
-    "message": "Kimi API key"
+    "message": "API key"
   },
   "hintApiKey": {
-    "message": "The key is stored unencrypted in the Thunderbird profile (storage.local) and is included in profile backups. Use “Delete key” to remove it at any time."
+    "message": "Create a key at $PLATFORM$. It is stored unencrypted in your Thunderbird profile and included in profile backups. “Delete key” removes the key for the selected provider.",
+    "placeholders": {
+      "platform": {
+        "content": "$1"
+      }
+    }
   },
   "labelBaseUrl": {
     "message": "API base URL"
   },
   "hintBaseUrl": {
-    "message": "Only these hosts are permitted: $HOSTS$. api.moonshot.ai belongs to platform.kimi.ai, api.moonshot.cn to the separate China platform — their keys are not interchangeable. Any other address would send your API key and message content to a foreign server.",
+    "message": "Requests for this provider go only to $HOSTS$. Keys are never shared between providers.",
     "placeholders": {
       "hosts": {
         "content": "$1"
@@ -89,7 +99,7 @@
     "message": "Settings saved."
   },
   "statusCleared": {
-    "message": "API key deleted and consent withdrawn."
+    "message": "The selected provider’s API key was deleted and consent withdrawn."
   },
   "errUrlEmpty": {
     "message": "Please provide an API base URL."
@@ -101,16 +111,13 @@
     "message": "The API base URL must start with https://."
   },
   "errUrlHostNotAllowed": {
-    "message": "This host is not permitted. Only api.moonshot.cn and api.moonshot.ai are allowed."
+    "message": "Only api.moonshot.ai, api.moonshot.cn and openrouter.ai are permitted."
   },
   "errUrlHasCredentials": {
     "message": "The API base URL must not contain credentials."
   },
   "errUnsupportedModel": {
     "message": "Invalid model identifier."
-  },
-  "errConsentMissing": {
-    "message": "Please confirm the privacy notice first."
   },
   "errSaveFailed": {
     "message": "Saving failed: $DETAIL$",
@@ -124,7 +131,7 @@
     "message": "The privacy notice has not been confirmed yet. Please consent in the settings."
   },
   "errNoApiKey": {
-    "message": "Please enter your Kimi API key in the settings first."
+    "message": "Please enter the selected provider’s API key in the settings first."
   },
   "errNoPrompt": {
     "message": "Please enter an instruction."
@@ -193,7 +200,7 @@
     }
   },
   "errPermissionDenied": {
-    "message": "Settings were saved, but access to $ORIGIN$ was denied. Without this permission no reply can be generated.",
+    "message": "Access to $ORIGIN$ was denied. Grant this permission in the settings to use the provider.",
     "placeholders": {
       "origin": {
         "content": "$1"
@@ -204,10 +211,10 @@
     "message": "Load available models"
   },
   "hintModel": {
-    "message": "This list comes from the extension's fallback list. “Load available models” queries /v1/models and shows exactly the models your account has access to. The stated context window determines how much message text is transmitted."
+    "message": "Type to search the list or enter a model ID. “Load available models” fetches the provider’s catalog; save to keep it. OpenRouter IDs include a provider prefix, such as moonshotai/kimi-k2.5. Availability and prices depend on the model and account."
   },
   "statusModelsLoaded": {
-    "message": "Loaded $COUNT$ models.",
+    "message": "Loaded $COUNT$ models. Select a model and save settings.",
     "placeholders": {
       "count": {
         "content": "$1"
@@ -229,10 +236,10 @@
     "message": "This Thunderbird version does not provide the required messageDisplay API. Thunderbird 128 or newer is required."
   },
   "composeActionTitle": {
-    "message": "Write text with Kimi AI"
+    "message": "Write text with AI"
   },
   "composeTitle": {
-    "message": "Write text with Kimi AI"
+    "message": "Write text with AI"
   },
   "composeButton": {
     "message": "Generate and insert text"
@@ -311,15 +318,44 @@
     "message": "Setup — three steps"
   },
   "firstRunStep1": {
-    "message": "Read the privacy notice and tick the box below it."
+    "message": "Choose a provider and read its privacy notice."
   },
   "firstRunStep2": {
-    "message": "Enter your API key from platform.kimi.ai (starts with “sk-”)."
+    "message": "Enter that provider’s API key, choose a model and confirm consent."
   },
   "firstRunStep3": {
-    "message": "Save — Thunderbird will then ask once for permission to access the API."
+    "message": "Save — Thunderbird may ask for permission to access the selected API."
   },
   "statusSetupComplete": {
-    "message": "Setup complete. Open an email and click “Reply with Kimi AI” in the message view."
+    "message": "Setup complete. Open an email and click “Reply with AI” in the message view."
+  },
+  "privacyOpenRouter": {
+    "message": "Reply suggestions and generated replies send the sender, subject, message text and your instruction to OpenRouter, which forwards the request to the model provider it selects. When composing, recipients and draft text may be included instead. Routing, storage and processing depend on the model and your OpenRouter account settings. Only use this if you are entitled to share the data. Loading the model list sends the API key but no email content."
+  },
+  "labelProvider": {
+    "message": "AI provider"
+  },
+  "hintProvider": {
+    "message": "Each provider keeps its own API key, consent and model selection. Save settings to activate your selection."
+  },
+  "errUrlEndpoint": {
+    "message": "Select one of the supported API endpoints. Custom paths, ports and query strings are not allowed."
+  },
+  "errProviderMismatch": {
+    "message": "The API endpoint does not match the selected provider."
+  },
+  "errCredits": {
+    "message": "Insufficient API credit. Check your provider account. ($DETAIL$)",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errReplyTruncated": {
+    "message": "The model reached its output limit. No incomplete text was inserted. Try a shorter instruction or another model."
+  },
+  "errModelsTimeout": {
+    "message": "The model list request timed out after 20 seconds."
   }
 }

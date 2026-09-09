@@ -1,7 +1,7 @@
 {
-  "name": "kimi-ai-mail-assistant",
-  "version": "1.7.0",
-  "description": "Thunderbird MailExtension fuer KI-gestuetzte E-Mail-Antworten via Kimi AI (Moonshot AI).",
+  "name": "ai-mail-assistant",
+  "version": "1.8.0",
+  "description": "Thunderbird MailExtension for AI-assisted email replies with OpenRouter and Kimi / Moonshot AI.",
   "private": true,
   "license": "MIT",
   "scripts": {

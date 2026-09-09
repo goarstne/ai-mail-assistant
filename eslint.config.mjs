@@ -6,6 +6,7 @@
  * Scope - deshalb "script" statt "module" und die lib/-Namespaces als globals.
  */
 export default [
+  { files: ["scripts/**/*.mjs"], languageOptions: { sourceType: "module" } },
   {
     files: ["background.js", "lib/**/*.js", "popup/**/*.js", "options/**/*.js"],
     languageOptions: {
@@ -25,9 +26,9 @@ export default [
         setTimeout: "readonly",
         clearTimeout: "readonly",
         globalThis: "readonly",
-        KimiConfig: "readonly",
-        KimiMailText: "readonly",
-        KimiI18n: "readonly"
+        MailAssistantConfig: "readonly",
+        MailAssistantMailText: "readonly",
+        MailAssistantI18n: "readonly"
       }
     },
     rules: {
@@ -40,7 +41,7 @@ export default [
     }
   },
   {
-    files: ["test/**/*.js", "scripts/**/*.mjs"],
+    files: ["test/**/*.js"],
     languageOptions: {
       ecmaVersion: 2023,
       sourceType: "commonjs",

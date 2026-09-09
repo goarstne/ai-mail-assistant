@@ -1,15 +1,15 @@
 {
   "extName": {
-    "message": "Kimi AI Mail Assistant"
+    "message": "AI Mail Assistant"
   },
   "extDescription": {
-    "message": "KI-gestützte E-Mail-Antworten mit Kimi AI (Moonshot AI). Der Mailinhalt wird dafür an die Moonshot-API übertragen."
+    "message": "KI-gestützte E-Mail-Antworten mit OpenRouter oder Kimi / Moonshot AI. Mailinhalte werden an den gewählten Anbieter übertragen."
   },
   "actionTitle": {
-    "message": "Mit Kimi AI antworten"
+    "message": "Mit KI antworten"
   },
   "popupTitle": {
-    "message": "Mit Kimi AI antworten"
+    "message": "Mit KI antworten"
   },
   "labelSubject": {
     "message": "Betreff:"
@@ -27,7 +27,7 @@
     "message": "Antwort generieren und einfügen"
   },
   "loadingText": {
-    "message": "Kimi AI generiert die Antwort …"
+    "message": "Die KI erstellt die Antwort …"
   },
   "noMessageSelected": {
     "message": "Keine E-Mail ausgewählt"
@@ -48,28 +48,38 @@
     "message": "Bevor Antworten erzeugt werden können, muss in den Einstellungen der Datenschutzhinweis bestätigt und ein API-Key hinterlegt werden."
   },
   "optionsTitle": {
-    "message": "Kimi AI Einstellungen"
+    "message": "AI Mail Assistant – Einstellungen"
   },
   "privacyHeading": {
     "message": "Datenschutzhinweis"
   },
   "privacyBody": {
-    "message": "Beim Erzeugen einer Antwort werden Absender, Betreff und Inhalt der ausgewählten E-Mail an die Moonshot-AI-API übertragen und dort verarbeitet. Das betrifft auch personenbezogene Daten Dritter, die dir geschrieben haben. Verwende die Erweiterung nur, wenn du dazu berechtigt bist. Details siehe PRIVACY.md."
+    "message": "Antwortvorschläge und generierte Antworten übertragen Absender, Betreff, Mailtext und deine Anweisung an den gewählten Moonshot-AI-Dienst. Beim Verfassen können stattdessen Empfänger und Entwurfstext enthalten sein. Darin können personenbezogene Daten anderer Personen stehen. Nutze dies nur, wenn du zur Weitergabe berechtigt bist. Beim Laden der Modellliste wird der API-Key übertragen, aber kein Mailinhalt."
   },
   "consentLabel": {
-    "message": "Ich habe den Datenschutzhinweis gelesen und stimme der Übertragung von Mailinhalten an die Moonshot-AI-API zu."
+    "message": "Ich stimme der oben beschriebenen Übertragung von Mailinhalten über $PROVIDER$ zu.",
+    "placeholders": {
+      "provider": {
+        "content": "$1"
+      }
+    }
   },
   "labelApiKey": {
-    "message": "Kimi API Key"
+    "message": "API-Key"
   },
   "hintApiKey": {
-    "message": "Der Schlüssel wird unverschlüsselt im Thunderbird-Profil gespeichert (storage.local) und ist in Profil-Backups enthalten. Über „Key löschen“ lässt er sich jederzeit entfernen."
+    "message": "Erstelle einen Key auf $PLATFORM$. Er wird unverschlüsselt im Thunderbird-Profil gespeichert und ist in Profil-Backups enthalten. „Key löschen“ entfernt den Key des gewählten Anbieters.",
+    "placeholders": {
+      "platform": {
+        "content": "$1"
+      }
+    }
   },
   "labelBaseUrl": {
     "message": "API Base URL"
   },
   "hintBaseUrl": {
-    "message": "Nur folgende Hosts sind zugelassen: $HOSTS$. api.moonshot.ai gehört zu platform.kimi.ai, api.moonshot.cn zur separaten China-Plattform — die Keys sind nicht austauschbar. Andere Adressen würden API-Key und Mailinhalt an einen fremden Server senden.",
+    "message": "Anfragen für diesen Anbieter gehen ausschließlich an $HOSTS$. Keys werden nicht zwischen Anbietern geteilt.",
     "placeholders": {
       "hosts": {
         "content": "$1"
@@ -89,7 +99,7 @@
     "message": "Einstellungen gespeichert."
   },
   "statusCleared": {
-    "message": "API-Key gelöscht und Zustimmung zurückgezogen."
+    "message": "Der API-Key des gewählten Anbieters wurde gelöscht und die Zustimmung zurückgezogen."
   },
   "errUrlEmpty": {
     "message": "Bitte eine API Base URL angeben."
@@ -101,16 +111,13 @@
     "message": "Die API Base URL muss mit https:// beginnen."
   },
   "errUrlHostNotAllowed": {
-    "message": "Dieser Host ist nicht zugelassen. Erlaubt sind ausschließlich api.moonshot.cn und api.moonshot.ai."
+    "message": "Erlaubt sind nur api.moonshot.ai, api.moonshot.cn und openrouter.ai."
   },
   "errUrlHasCredentials": {
     "message": "Die API Base URL darf keine Zugangsdaten enthalten."
   },
   "errUnsupportedModel": {
     "message": "Ungültige Modell-Kennung."
-  },
-  "errConsentMissing": {
-    "message": "Bitte zuerst den Datenschutzhinweis bestätigen."
   },
   "errSaveFailed": {
     "message": "Speichern fehlgeschlagen: $DETAIL$",
@@ -124,7 +131,7 @@
     "message": "Der Datenschutzhinweis wurde noch nicht bestätigt. Bitte in den Einstellungen zustimmen."
   },
   "errNoApiKey": {
-    "message": "Bitte zuerst den Kimi API Key in den Einstellungen eintragen."
+    "message": "Bitte trage zuerst den API-Key des gewählten Anbieters in den Einstellungen ein."
   },
   "errNoPrompt": {
     "message": "Bitte eine Anweisung eingeben."
@@ -193,7 +200,7 @@
     }
   },
   "errPermissionDenied": {
-    "message": "Die Einstellungen wurden gespeichert, aber der Zugriff auf $ORIGIN$ wurde abgelehnt. Ohne diese Freigabe kann keine Antwort erzeugt werden.",
+    "message": "Der Zugriff auf $ORIGIN$ wurde abgelehnt. Erteile die Freigabe in den Einstellungen, um den Anbieter zu nutzen.",
     "placeholders": {
       "origin": {
         "content": "$1"
@@ -204,10 +211,10 @@
     "message": "Verfügbare Modelle laden"
   },
   "hintModel": {
-    "message": "Die Liste stammt aus der Rückfallliste der Erweiterung. „Verfügbare Modelle laden“ fragt /v1/models ab und zeigt genau die Modelle, die dein Account freigeschaltet hat. Das angegebene Kontextfenster bestimmt, wie viel Mailtext übertragen wird."
+    "message": "Tippe zum Durchsuchen der Liste oder gib eine Modell-ID ein. „Verfügbare Modelle laden“ ruft den Katalog ab; zum Behalten anschließend speichern. OpenRouter-IDs enthalten einen Anbieterpräfix, etwa moonshotai/kimi-k2.5. Verfügbarkeit und Preise hängen von Modell und Konto ab."
   },
   "statusModelsLoaded": {
-    "message": "$COUNT$ Modelle geladen.",
+    "message": "$COUNT$ Modelle geladen. Wähle ein Modell und speichere die Einstellungen.",
     "placeholders": {
       "count": {
         "content": "$1"
@@ -229,10 +236,10 @@
     "message": "Diese Thunderbird-Version stellt die benötigte messageDisplay-API nicht bereit. Thunderbird 128 oder neuer wird vorausgesetzt."
   },
   "composeActionTitle": {
-    "message": "Text mit Kimi AI schreiben"
+    "message": "Text mit KI schreiben"
   },
   "composeTitle": {
-    "message": "Text mit Kimi AI schreiben"
+    "message": "Text mit KI schreiben"
   },
   "composeButton": {
     "message": "Text generieren und einfügen"
@@ -311,15 +318,44 @@
     "message": "Einrichtung — drei Schritte"
   },
   "firstRunStep1": {
-    "message": "Datenschutzhinweis lesen und den Haken darunter setzen."
+    "message": "Wähle einen Anbieter und lies seinen Datenschutzhinweis."
   },
   "firstRunStep2": {
-    "message": "API-Key von platform.kimi.ai eintragen (beginnt mit „sk-“)."
+    "message": "Trage den zugehörigen API-Key ein, wähle ein Modell und bestätige die Zustimmung."
   },
   "firstRunStep3": {
-    "message": "Speichern — Thunderbird fragt dann einmalig nach der Freigabe für den API-Zugriff."
+    "message": "Speichern – Thunderbird fragt gegebenenfalls nach der Freigabe für die gewählte API."
   },
   "statusSetupComplete": {
-    "message": "Fertig eingerichtet. Öffne eine E-Mail und klicke in der Nachrichtenanzeige auf „Mit Kimi AI antworten“."
+    "message": "Einrichtung abgeschlossen. Öffne eine E-Mail und klicke in der Nachrichtenansicht auf „Mit KI antworten“."
+  },
+  "privacyOpenRouter": {
+    "message": "Antwortvorschläge und generierte Antworten übertragen Absender, Betreff, Mailtext und deine Anweisung an OpenRouter. OpenRouter leitet die Anfrage an den von ihm ausgewählten Modellanbieter weiter. Beim Verfassen können stattdessen Empfänger und Entwurfstext enthalten sein. Routing, Speicherung und Verarbeitung hängen vom Modell und deinen OpenRouter-Kontoeinstellungen ab. Nutze dies nur, wenn du zur Weitergabe berechtigt bist. Beim Laden der Modellliste wird der API-Key übertragen, aber kein Mailinhalt."
+  },
+  "labelProvider": {
+    "message": "KI-Anbieter"
+  },
+  "hintProvider": {
+    "message": "Jeder Anbieter hat einen eigenen API-Key, eine eigene Zustimmung und Modellauswahl. Speichere die Einstellungen, um deine Auswahl zu aktivieren."
+  },
+  "errUrlEndpoint": {
+    "message": "Wähle einen der unterstützten API-Endpunkte. Eigene Pfade, Ports und URL-Parameter sind nicht erlaubt."
+  },
+  "errProviderMismatch": {
+    "message": "Der API-Endpunkt passt nicht zum gewählten Anbieter."
+  },
+  "errCredits": {
+    "message": "Das API-Guthaben reicht nicht aus. Prüfe dein Anbieterkonto. ($DETAIL$)",
+    "placeholders": {
+      "detail": {
+        "content": "$1"
+      }
+    }
+  },
+  "errReplyTruncated": {
+    "message": "Das Modell hat sein Ausgabelimit erreicht. Es wurde kein unvollständiger Text eingefügt. Versuche eine kürzere Anweisung oder ein anderes Modell."
+  },
+  "errModelsTimeout": {
+    "message": "Die Anfrage für die Modellliste wurde nach 20 Sekunden abgebrochen."
   }
 }

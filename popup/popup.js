@@ -8,9 +8,9 @@
  */
 "use strict";
 
-const { translate, applyToDocument } = globalThis.KimiI18n;
-const MailText = globalThis.KimiMailText;
-const Ui = globalThis.KimiUi;
+const { translate, applyToDocument } = globalThis.MailAssistantI18n;
+const MailText = globalThis.MailAssistantMailText;
+const Ui = globalThis.MailAssistantUi;
 const $ = Ui.$;
 
 /** @type {{id: number, author: string, subject: string} | null} */
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Vorschlaege nur, wenn es auch Inhalt gibt, ueber den sich etwas sagen laesst.
     if (currentMessage && extractedBody) {
       Ui.setSuggestionState("idle");
-      const { autoSuggest } = await globalThis.KimiConfig.loadSettings(browser.storage);
+      const { autoSuggest } = await globalThis.MailAssistantConfig.loadSettings(browser.storage);
       if (autoSuggest) {
         Ui.loadSuggestions(suggestionContext(), translate, applySuggestion);
       } else {

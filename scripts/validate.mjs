@@ -113,7 +113,7 @@ const patterns = [
   /\bt\(\s*["'`]([A-Za-z0-9_]+)["'`]/g,                   // t("key") in background.js
   /data-i18n(?:-[a-z-]+)?="([A-Za-z0-9_]+)"/g,            // Markup
   /__MSG_([A-Za-z0-9_]+)__/g,                             // manifest / <title>
-  /new KimiError\(\s*["'`]([A-Za-z0-9_]+)["'`]/g,         // Fehlerschluessel
+  /new AssistantError\(\s*["'`]([A-Za-z0-9_]+)["'`]/g,         // Fehlerschluessel
   /reason:\s*["'`]([A-Za-z0-9_]+)["'`]/g                  // validateBaseUrl-Gruende
 ];
 

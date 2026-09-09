@@ -11,7 +11,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 VERSION="$(python3 -c 'import json;print(json.load(open("manifest.json"))["version"])')"
-OUT="dist/kimi-ai-mail-assistant-${VERSION}.xpi"
+OUT="dist/ai-mail-assistant-${VERSION}.xpi"
 
 echo "==> Pruefungen"
 node scripts/validate.mjs

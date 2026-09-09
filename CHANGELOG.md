@@ -3,6 +3,40 @@
 Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 Versionierung nach [SemVer](https://semver.org/lang/de/).
 
+## [1.8.0] — 2026-09-09
+
+### Neu
+
+- OpenRouter als zusätzlicher Anbieter, mit Modellkatalog, suchbarer/manueller
+  Modell-ID und Unterstützung für Varianten wie `:free`.
+- Separate Keys, Zustimmung und Modelllisten für OpenRouter, Kimi international
+  und Kimi China. Alte Kimi-Einstellungen werden dem bisherigen Endpunkt
+  zugeordnet und beim Speichern migriert.
+- Kontext- und Ausgabelimits aus OpenRouter-Modellmetadaten; konservativer
+  Rückfall für unbekannte Modelle.
+- Tests für Anbieterwechsel, Migration, Modellkatalog, Hintergrundabläufe,
+  Berechtigungen, Guthabenfehler und unvollständige Antworten: insgesamt 93.
+
+### Geändert
+
+- Projekt und Repository heißen jetzt **AI Mail Assistant** / `ai-mail-assistant`.
+  Die interne Add-on-ID bleibt für kompatible Updates und bestehende Einstellungen
+  unverändert.
+- Anbieterbezogene Datenschutztexte, deutsche/englische Oberfläche,
+  Dokumentation und Screenshots aktualisiert.
+- Feste API-Endpunkte statt frei bearbeitbarer Basis-URL; beide Netzwerkpfade
+  verweigern HTTP-Weiterleitungen.
+
+### Behoben
+
+- Widerruf der Zustimmung lässt sich mit gespeichertem API-Key sichern, ohne
+  erneut Hostrechte anzufordern.
+- Der Chat-Timeout umfasst auch den Response-Body. OpenRouter-Fehler in
+  HTTP-200-Antworten und fehlendes Guthaben erhalten verständliche Meldungen.
+- Bei erreichtem Ausgabelimit wird kein unvollständiger Text in den Entwurf
+  eingefügt.
+- ESLint erkennt die Build-Skripte korrekt als ES-Module.
+
 ## [1.7.0] — 2026-08-27
 
 Vorbereitung der Veröffentlichung. Keine Änderung am Funktionsumfang der

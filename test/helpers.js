@@ -21,6 +21,19 @@ loadLib("lib/config.js");
 loadLib("lib/mailtext.js");
 
 module.exports = {
-  Config: globalThis.KimiConfig,
-  MailText: globalThis.KimiMailText
+  Config: globalThis.MailAssistantConfig,
+  MailText: globalThis.MailAssistantMailText
 };
+
+function memoryStorage(initial = {}) {
+  const data = structuredClone(initial);
+  return {
+    data,
+    local: {
+      async get(defaults) { return { ...structuredClone(defaults), ...structuredClone(data) }; },
+      async set(values) { Object.assign(data, structuredClone(values)); },
+      async remove(keys) { for (const key of keys) delete data[key]; }
+    }
+  };
+}
+module.exports.memoryStorage = memoryStorage;
